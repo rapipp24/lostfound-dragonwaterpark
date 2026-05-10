@@ -1,9 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { UserModule } from '../users/user.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
+  imports: [
+    UserModule,
+    JwtModule.register({
+      secret: 'dragonwaterpark_secret_key',
+      signOptions: { expiresIn: '1h' },
+    }),
+  ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService],
 })
 export class AuthModule {}
