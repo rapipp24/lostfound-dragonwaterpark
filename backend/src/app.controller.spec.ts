@@ -1,22 +1,21 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Body, Controller, Post } from '@nestjs/common';
 
-describe('AppController', () => {
-  let appController: AppController;
+@Controller('auth')
+export class AuthController {
+  @Post('login')
+  login(@Body() body: { email: string; password: string }) {
+    const { email, password } = body;
 
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService],
-    }).compile();
+    if (email === 'admin@gmail.com' && password === '123456') {
+      return {
+        success: true,
+        token: 'backend-dummy-token',
+      };
+    }
 
-    appController = app.get<AppController>(AppController);
-  });
-
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
-    });
-  });
-});
+    return {
+      success: false,
+      message: 'Email atau password salah',
+    };
+  }
+}

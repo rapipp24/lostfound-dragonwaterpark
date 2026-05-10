@@ -16,10 +16,12 @@ export class AuthController {
   getUsers() {
     return this.authService.getUsers();
   }
+
   @Post('login')
   login(@Body() body: LoginDto) {
     return this.authService.login(body);
   }
+
   @Post('register')
   register(@Body() body: RegisterDto) {
     return this.authService.register(body);
