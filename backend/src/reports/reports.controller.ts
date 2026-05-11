@@ -1,35 +1,47 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-
-type Report = {
-  title: string;
-  description: string;
-};
-
-const reports: Report[] = [];
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
+import { ReportsService } from './reports.service';
+import { CreateReportDto } from './dto/create-report.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('reports')
 export class ReportsController {
+  constructor(private reportsService: ReportsService) {}
+
   @Get()
   getReports() {
-    return reports;
+    return this.reportsService.findAll();
   }
 
   @Post()
-  createReport(@Body() body: Report) {
-    reports.push(body);
-
-    return {
-      success: true,
-      data: body,
-    };
+  @UseGuards(AuthGuard('jwt'))
+  createReport(@Body() body: CreateReportDto) {
+    return this.reportsService.create(body);
   }
 
-  @Delete(':index')
-  deleteReport(@Param('index') index: string) {
-    reports.splice(Number(index), 1);
-
-    return {
-      success: true,
-    };
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  deleteReport(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        // jika input id tidak berupa angka, maka akan melempar exceptionFactory
+        exceptionFactory: () => {
+          throw new BadRequestException('Params Id harus berupa angka!');
+        },
+      }),
+    )
+    id: number,
+  ) {
+    return this.reportsService.remove(id);
   }
 }

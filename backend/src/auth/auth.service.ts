@@ -1,4 +1,4 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
@@ -7,31 +7,36 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  // buat constuctor
   constructor(
     private userService: UsersService,
-    private jwtservice: JwtService,
+    private jwtService: JwtService,
   ) {}
 
-  register(data: RegisterDto) {
+  async register(data: RegisterDto) {
     return this.userService.createUser(data);
+  }
+  async CreateAdmin(data: RegisterDto) {
+    return this.userService.CreateAdmin(data);
   }
 
   async login(data: LoginDto) {
-    const user = this.userService.findByEmail(data.email);
+    // Pastikan menggunakan await di sini
+    const user = await this.userService.findByEmail(data.email);
 
     if (!user) {
-      return 'User tidak ditemukan';
+      throw new UnauthorizedException('User tidak ditemukan');
     }
 
     const isPasswordMatch = await bcrypt.compare(data.password, user.password);
 
     if (!isPasswordMatch) {
-      return 'Password salah';
+      throw new UnauthorizedException('Password salah');
     }
 
     const payload = {
       email: user.email,
+      fullName: user.fullName,
+      role: user.role,
     };
 
     const token = this.jwtService.sign(payload);
@@ -39,10 +44,15 @@ export class AuthService {
     return {
       message: 'Login berhasil',
       access_token: token,
+      user: {
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+      },
     };
   }
 
-  getUsers() {
+  async getUsers() {
     return this.userService.GetAllUsers();
   }
 }
