@@ -1,29 +1,25 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
-  const pathname = usePathname();
-
   return (
-    <div style={{ width: "200px", padding: "10px", background: "#ddd"}}>
-      <h2>Admin Menu</h2>
+    <aside className="w-64 min-h-screen bg-gray-900 text-white p-5">
+      <h1 className="text-x1 font-bold mb-6">
+        Admin Menu
+      </h1>
 
-      <ul>
-        <li style={{ fontWeight: pathname === "/admin/dashboard" ? "bold" : "normal"}}>
-        <Link href="/admin/dashboard">Dashboard</Link>
-        </li>
+      <nav className="space-y-2">
+        <Link href="/admin/dashboard" className="block rounded px-3 py-2 hover:bg-gray-700">
+          Dashboard
+        </Link>
 
-        <li style={{ fontWeight: pathname === "/admin/reports" ? "bold" : "normal"}}>
-        <Link href="/admin/reports">Reports</Link>
-        </li>
+        <Link href="/admin/reports" className="block rounded px-3 py-2 hover:bg-gray-700">
+          Reports
+        </Link>
 
-        <li style={{ fontWeight: pathname === "/admin/claims" ? "bold" : "normal"}}>
-        <Link href="/admin/claims">Claims</Link>
-        </li>
-    </ul>
-    </div>
+        <Link href="/admin/claims" className="block rounded px-3 py-2 hover:bg-gray-700">
+          Claims
+        </Link>
+      </nav>
+    </aside>
   );
 }
-
