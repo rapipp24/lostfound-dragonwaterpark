@@ -25,4 +25,16 @@ model Report {
   status      String   @default("Pending")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  claims      Claim[]
+}
+
+model Claim {
+  id           Int      @id @default(autoincrement())
+  claimerName  String
+  claimerPhone String
+  status       String   @default("Pending") // Pending, Approved, Rejected
+  report       Report   @relation(fields: [reportId], references: [id])
+  reportId     Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
