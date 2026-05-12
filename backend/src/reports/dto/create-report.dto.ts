@@ -1,9 +1,13 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateReportDto {
-  @IsNotEmpty({ message: 'Judul barang tidak boleh kosong' })
+  @IsNotEmpty({ message: 'Nama barang tidak boleh kosong' })
   @IsString()
-  title: string;
+  item: string;
+
+  @IsNotEmpty({ message: 'Lokasi tidak boleh kosong' })
+  @IsString()
+  location: string;
 
   @IsNotEmpty({ message: 'Deskripsi tidak boleh kosong' })
   @IsString()

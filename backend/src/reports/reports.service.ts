@@ -15,10 +15,22 @@ export class ReportsService {
   async create(data: CreateReportDto) {
     return this.prisma.report.create({
       data: {
-        title: data.title,
+        item: data.item,
+        location: data.location,
         description: data.description,
       },
     });
+  }
+
+  async updateStatus(id: number, status: string) {
+    try {
+      return await this.prisma.report.update({
+        where: { id },
+        data: { status },
+      });
+    } catch (error) {
+      throw new NotFoundException(`Laporan dengan ID ${id} tidak ditemukan`);
+    }
   }
 
   async remove(id: number) {

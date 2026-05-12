@@ -6,21 +6,35 @@ import Button from "../components/Button";
 import { Report } from "../types/report";
 import ReportsTable from "../components/ReportsTable";
 
+import { useEffect, useState } from "react";
+
 export default function ReportsPage() {
-  const reports: Report[] = [
-    {
-      id: 1,
-      item: "Dompet",
-      location: "Kolam Anak",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      item: "HP",
-      location: "Water Slide",
-      status: "Approved",
-    },
-  ];
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/reports");
+        const data = await response.json();
+        
+        const mappedData = data.map((r: any) => ({
+          id: r.id,
+          item: r.item,
+          location: r.location,
+          status: r.status,
+        }));
+
+        setReports(mappedData);
+      } catch (error) {
+        console.error("Gagal mengambil data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReports();
+  }, []);
 
   return (
     <div>

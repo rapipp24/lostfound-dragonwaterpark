@@ -14,12 +14,34 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    // Simulasi Login
-    if (email === "admin@dragon.com" && password === "admin123") {
+    try {
+      const response = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Gagal login");
+      }
+
+      // Validasi apakah dia admin
+      if (data.user.role !== "admin") {
+        throw new Error("Anda tidak memiliki akses ke panel admin!");
+      }
+
+      // Simpan Token & Data User
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("isLoggedIn", "true");
+
       router.push("/admin/dashboard");
-    } else {
-      setError("Email atau Password salah!");
+    } catch (err: any) {
+      setError(err.message || "Terjadi kesalahan koneksi!");
     }
   };
 

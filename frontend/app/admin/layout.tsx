@@ -11,10 +11,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // 1. Cek Login (Satpam)
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    const token = localStorage.getItem("access_token");
+    const userStr = localStorage.getItem("user");
+    const user = userStr ? JSON.parse(userStr) : null;
+
     const isAuthPage = pathname === "/admin/login" || pathname === "/admin/register";
 
-    if (!isLoggedIn && !isAuthPage) {
+    // Jika tidak ada token atau bukan admin, tendang ke login
+    if ((!token || user?.role !== "admin") && !isAuthPage) {
       router.push("/admin/login");
     }
   }, [pathname, router]);

@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Patch,
   UseGuards,
   BadRequestException,
 } from '@nestjs/common';
@@ -26,6 +27,15 @@ export class ReportsController {
   @UseGuards(AuthGuard('jwt'))
   createReport(@Body() body: CreateReportDto) {
     return this.reportsService.create(body);
+  }
+
+  @Patch(':id/status')
+  @UseGuards(AuthGuard('jwt'))
+  updateStatusReport(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status') status: string,
+  ) {
+    return this.reportsService.updateStatus(id, status);
   }
 
   @Delete(':id')

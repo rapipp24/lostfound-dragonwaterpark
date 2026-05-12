@@ -9,12 +9,30 @@ export default function AddReportPage() {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Sementara kita console log dulu datanya
-    console.log({ item, location, description });
-    alert("Laporan Berhasil Ditambahkan!");
-    router.push("/admin/reports"); // Balik ke halaman tabel
+    
+    const token = localStorage.getItem("access_token");
+
+    try {
+      const response = await fetch("http://localhost:3000/reports", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ item, location, description }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Gagal menyimpan laporan");
+      }
+
+      alert("Laporan Berhasil Ditambahkan!");
+      router.push("/admin/reports");
+    } catch (error: any) {
+      alert(error.message);
+    }
   };
 
   return (
