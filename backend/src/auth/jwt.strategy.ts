@@ -9,7 +9,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       // mengambil token dari header authorizen (Bareer token)
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET, // ini yang harus sama dengan yang ada di AuthModule
+      secretOrKey: process.env.JWT_SECRET!,
     });
   }
 
