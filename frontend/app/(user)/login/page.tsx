@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { loginUser } from "@/services/auth.service";
+import { setCookie } from "../../../utils/cookies";
 import toast from "react-hot-toast";
 import { useAuth } from "../../../hooks/useAuth";
 
@@ -14,13 +16,13 @@ export default function LoginPage() {
 
   const router = useRouter();
 
-  const { isLogin } = useAuth();
+  const { isLogin, loading } = useAuth();
 
   useEffect(() => {
-    if (isLogin) {
+    if (!loading && isLogin) {
       router.push("/dashboard");
     }
-  }, [isLogin]);
+  }, [isLogin, loading]);
 
   async function handleLogin(
     e: React.FormEvent
@@ -28,30 +30,17 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      await loginUser({
-        email,
-        password,
-      });
+      const data = await loginUser(email, password);
 
-      toast.success("Login berhasil!");
-
-      localStorage.setItem(
-        "isLogin",
-        "true"
-      );
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          name: "Guest User",
-          email,
-        })
-      );
-
+      setCookie("access_token", data.access_token);
+      setCookie("user", JSON.stringify(data.user));
+      
+      toast.success("Login Berhasil!");
+      
       router.push("/dashboard");
 
-    } catch (error) {
-      toast.error("Login gagal!");
+    } catch (error: any) {
+      toast.error(error.message || "Login gagal! Periksa koneksi Anda.");
     }
   }
 
@@ -69,17 +58,30 @@ export default function LoginPage() {
           <Input
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+            required
           />
 
           <Input
             type="password"
             placeholder="Password"
+            value={password}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+            required
           />
 
-          <Button>
+          <Button className="w-full py-3">
             Login
           </Button>
         </form>
+
+        <p className="text-center mt-6 text-sm text-gray-500">
+          Belum punya akun?{" "}
+          <Link href="/register" className="text-blue-600 font-bold hover:underline">
+            Daftar gratis
+          </Link>
+        </p>
       </div>
     </div>
   );

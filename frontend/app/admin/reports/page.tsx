@@ -5,20 +5,20 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import { Report } from "../types/report";
 import ReportsTable from "../components/ReportsTable";
-
 import { useEffect, useState } from "react";
+import { getReports } from "../../../services/report.service";
 
 export default function ReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchReports = async () => {
+    const fetchReportsData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/reports");
-        const data = await response.json();
+        const responseData = await getReports();
+        const reportsArray = responseData.data || [];
         
-        const mappedData = data.map((r: any) => ({
+        const mappedData = reportsArray.map((r: any) => ({
           id: r.id,
           item: r.item,
           location: r.location,
@@ -33,15 +33,14 @@ export default function ReportsPage() {
       }
     };
 
-    fetchReports();
+    fetchReportsData();
   }, []);
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Reports</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Reports Management</h1>
         
-        {/* Tombol Add Report kita bungkus dengan Link agar berfungsi */}
         <Link href="/admin/reports/add">
           <Button>Add Report</Button>
         </Link>
@@ -54,6 +53,8 @@ export default function ReportsPage() {
       <div className="bg-white rounded-lg shadow">
         <ReportsTable reports={reports} />
       </div>
+
+      {loading && <div className="p-10 text-center text-gray-400">Memuat data...</div>}
     </div>
   );
 }

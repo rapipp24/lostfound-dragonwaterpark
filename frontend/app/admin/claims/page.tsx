@@ -1,15 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { Claim } from "../types/claim";
 import ClaimsTable from "../components/ClaimsTable";
 import { Report } from "../types/report";
+import { getClaims, createClaim, updateClaimStatus } from "../../../services/claim.service";
+import { getReports } from "../../../services/report.service";
+import toast from "react-hot-toast";
 
 export default function Page() {
+  const { user, isLogin, loading: authLoading } = useAuth();
+  const router = useRouter();
+
   const [claims, setClaims] = useState<Claim[]>([]);
-  const [reports, setReports] = useState<Report[]>([]); // Barang yang bisa diklaim
+  const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [claimerName, setClaimerName] = useState("");
@@ -18,16 +26,12 @@ export default function Page() {
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-
   const fetchData = async () => {
     try {
-      // Ambil data klaim
-      const claimsRes = await fetch("http://localhost:3000/claims", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const claimsData = await claimsRes.json();
-      setClaims(claimsData.map((c: any) => ({
+      const claimsResponse = await getClaims();
+      const claimsArray = claimsResponse.data || [];
+      
+      setClaims(claimsArray.map((c: any) => ({
         id: c.id,
         claimer: c.claimerName,
         phone: c.claimerPhone,
@@ -35,72 +39,59 @@ export default function Page() {
         status: c.status
       })));
 
-      // Ambil data barang yang statusnya 'Found' untuk didaftarkan klaim
-      const reportsRes = await fetch("http://localhost:3000/reports");
-      const reportsData = await reportsRes.json();
-      setReports(reportsData.filter((r: any) => r.status === "Found"));
+      const reportsResponse = await getReports("Found");
+      setReports(reportsResponse.data || []);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching data:", error);
+      toast.error(error.message || "Gagal mengambil data");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    // Hanya fetch data jika sudah login dan adalah ADMIN
+    if (!authLoading) {
+      if (!isLogin || user?.role !== "admin") {
+        router.push("/login");
+      } else {
+        fetchData();
+      }
+    }
+  }, [isLogin, authLoading, user, router]);
 
   const handleAddClaim = async () => {
     if (!claimerName || !claimerPhone || !selectedReportId) {
-      alert("Semua field wajib diisi!");
+      toast.error("Semua field wajib diisi!");
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:3000/claims", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          claimerName,
-          claimerPhone,
-          reportId: Number(selectedReportId)
-        }),
+      await createClaim({
+        claimerName,
+        claimerPhone,
+        reportId: Number(selectedReportId)
       });
-
-      if (response.ok) {
-        alert("Klaim berhasil didaftarkan!");
-        setIsModalOpen(false);
-        setClaimerName("");
-        setClaimerPhone("");
-        setSelectedReportId("");
-        fetchData();
-      }
+      
+      toast.success("Klaim berhasil didaftarkan!");
+      setIsModalOpen(false);
+      setClaimerName("");
+      setClaimerPhone("");
+      setSelectedReportId("");
+      fetchData();
     } catch (error) {
-      alert("Gagal menambah klaim");
+      toast.error("Gagal menambah klaim");
     }
   };
 
   const handleUpdateStatus = async (id: number, status: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/claims/${id}/status`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status }),
-      });
-
-      if (response.ok) {
-        alert(`Klaim ${status}!`);
-        fetchData();
-      }
+      await updateClaimStatus(id, status);
+      toast.success(`Klaim ${status}!`);
+      fetchData();
     } catch (error) {
-      alert("Gagal update status");
+      toast.error("Gagal update status");
     }
   };
 
@@ -110,12 +101,20 @@ export default function Page() {
     claim.status.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) return <div className="p-10 text-center">Loading data...</div>;
+  if (authLoading || (isLogin && user?.role === "admin" && loading)) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  if (!isLogin || user?.role !== "admin") return null;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Claims Management</h1>
+        <h1 className="text-2xl font-black text-gray-800">Claims Management</h1>
         <Button onClick={() => setIsModalOpen(true)}>Add New Claim</Button>
       </div>
 
@@ -128,15 +127,15 @@ export default function Page() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-[450px]">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center text-blue-600">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-md">
+            <h2 className="text-2xl font-black text-gray-800 mb-6 text-center text-blue-600">
               Register Claim
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Nama Pengambil</label>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1 ml-1">Nama Pengambil</label>
                 <Input
                   placeholder="Nama Lengkap"
                   value={claimerName}
@@ -145,7 +144,7 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">No. WhatsApp</label>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1 ml-1">No. WhatsApp</label>
                 <Input
                   placeholder="0812..."
                   value={claimerPhone}
@@ -154,9 +153,9 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Pilih Barang Temuan</label>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1 ml-1">Pilih Barang Temuan</label>
                 <select 
-                  className="w-full border p-2 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 outline-none text-black"
+                  className="w-full border border-gray-100 p-4 rounded-2xl bg-gray-50 focus:ring-4 focus:ring-blue-50 focus:border-blue-200 outline-none text-black font-medium transition-all"
                   value={selectedReportId}
                   onChange={(e) => setSelectedReportId(Number(e.target.value))}
                 >
@@ -165,18 +164,18 @@ export default function Page() {
                     <option key={r.id} value={r.id}>{r.item} (ID: {r.id})</option>
                   ))}
                 </select>
-                {reports.length === 0 && <p className="text-xs text-red-500 mt-1">* Tidak ada barang berstatus 'Found'</p>}
+                {reports.length === 0 && <p className="text-xs text-red-500 mt-2 font-bold">* Tidak ada barang berstatus 'Found'</p>}
               </div>
 
               <div className="flex gap-3 mt-8">
                 <button
-                  className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition"
+                  className="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-black hover:bg-blue-700 transition active:scale-95 shadow-lg shadow-blue-100"
                   onClick={handleAddClaim}
                 >
                   Submit Klaim
                 </button>
                 <button 
-                  className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition"
+                  className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black hover:bg-gray-200 transition active:scale-95"
                   onClick={() => setIsModalOpen(false)}
                 >
                   Batal
@@ -193,4 +192,4 @@ export default function Page() {
       />
     </div>
   );
-}
+}
