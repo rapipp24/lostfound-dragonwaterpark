@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards, Query } from '@nestjs/common';
 import { ClaimsService } from './claims.service';
 import { CreateClaimDto } from './dto/create-claim.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -14,8 +14,11 @@ export class ClaimsController {
   }
 
   @Get()
-  findAll() {
-    return this.claimsService.findAll();
+  findAll(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10'
+  ) {
+    return this.claimsService.findAll(+page, +limit);
   }
 
   @Patch(':id/status')

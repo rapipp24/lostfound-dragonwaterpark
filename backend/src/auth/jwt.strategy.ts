@@ -2,21 +2,37 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
+export interface JwtPayload {
+  id: number;
+  email: string;
+  fullName: string;
+  role: string;
+  iat?: number;
+  exp?: number;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error(
+        'FATAL: JWT_SECRET tidak ditemukan di environment variables!',
+      );
+    }
+
     super({
-      // mengambil token dari header authorizen (Bareer token)
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET!,
+      secretOrKey: secret,
     });
   }
 
-  validate(payload: any) {
+  async validate(payload: JwtPayload) {
     return {
+      id: payload.id,
       email: payload.email,
-      fullName: payload.fullName, // Pastikan N-nya besar sesuai payload di AuthService
+      fullName: payload.fullName,
       role: payload.role,
     };
   }

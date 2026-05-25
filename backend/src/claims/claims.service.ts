@@ -7,7 +7,6 @@ export class ClaimsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createClaimDto: CreateClaimDto) {
-    // Cek apakah barang ada
     const report = await this.prisma.report.findUnique({
       where: { id: createClaimDto.reportId },
     });
@@ -28,15 +27,30 @@ export class ClaimsService {
     });
   }
 
-  async findAll() {
-    return this.prisma.claim.findMany({
-      include: {
-        report: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+  async findAll(page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      this.prisma.claim.findMany({
+        skip,
+        take: limit,
+        include: {
+          report: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.claim.count(),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      }
+    };
   }
 
   async updateStatus(id: number, status: string) {
@@ -48,7 +62,6 @@ export class ClaimsService {
       throw new NotFoundException('Klaim tidak ditemukan');
     }
 
-    // Jika disetujui (Approved), ubah status barang di Report menjadi "Claimed"
     if (status === 'Approved') {
       await this.prisma.report.update({
         where: { id: claim.reportId },

@@ -13,6 +13,7 @@ model User {
   fullName  String
   password  String
   role      String   @default("user")
+  reports   Report[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -23,6 +24,9 @@ model Report {
   location    String
   description String
   status      String   @default("Pending")
+  image       String?  @default("")
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   claims      Claim[]
@@ -33,7 +37,7 @@ model Claim {
   claimerName  String
   claimerPhone String
   status       String   @default("Pending") // Pending, Approved, Rejected
-  report       Report   @relation(fields: [reportId], references: [id])
+  report       Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
   reportId     Int
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
