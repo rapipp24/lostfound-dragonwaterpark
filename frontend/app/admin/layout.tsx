@@ -15,7 +15,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const userStr = localStorage.getItem("user");
     const user = userStr ? JSON.parse(userStr) : null;
 
-    const isAuthPage = pathname === "/admin/login" || pathname === "/admin/register";
+    const isAuthPage = pathname === "/admin/login";
 
     // Jika tidak ada token atau bukan admin, tendang ke login
     if ((!token || user?.role !== "admin") && !isAuthPage) {
@@ -23,8 +23,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [pathname, router]);
 
-  // 2. Logika Tampilan: Hilangkan Sidebar di Login & Register
-  const isAuthPage = pathname === "/admin/login" || pathname === "/admin/register";
+  // 2. Logika Tampilan: Hilangkan Sidebar di Login
+  const isAuthPage = pathname === "/admin/login";
 
   if (isAuthPage) {
     return (
