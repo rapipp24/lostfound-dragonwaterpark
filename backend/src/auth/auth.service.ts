@@ -82,4 +82,26 @@ export class AuthService {
   async getUsers() {
     return this.userService.GetAllUsers();
   }
+
+  // Mengosongkan refresh token di database saat user logout
+  async logout(userId: number) {
+    await this.userService.updateRefreshToken(userId, null);
+    return {
+      message: 'Logout berhasil, sesi refresh token telah dihapus',
+    };
+  }
+
+  // Menghasilkan sepasang token baru jika refresh token valid
+  async refresh(userId: number, email: string, fullName: string, role: string) {
+    const payload = { id: userId, email, fullName, role };
+    const tokens = await this.generateTokens(payload);
+    
+    // Perbarui hash refresh token baru di database
+    await this.userService.updateRefreshToken(userId, tokens.refreshToken);
+
+    return {
+      access_token: tokens.accessToken,
+      refresh_token: tokens.refreshToken,
+    };
+  }
 }
