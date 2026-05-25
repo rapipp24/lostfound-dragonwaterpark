@@ -16,7 +16,7 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         fullName: data.fullName,
         email: data.email,
@@ -24,11 +24,13 @@ export class UsersService {
         role: 'user',
       },
     });
+    delete (user as any).password;
+    return user;
   }
 
   async CreateAdmin(data: RegisterDto) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         fullName: data.fullName,
         email: data.email,
@@ -36,6 +38,8 @@ export class UsersService {
         role: 'admin', // role defaultnya admin
       },
     });
+    delete (user as any).password;
+    return user;
   }
 
   async GetAllUsers() {
