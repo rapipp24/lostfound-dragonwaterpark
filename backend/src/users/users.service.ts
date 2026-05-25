@@ -59,4 +59,31 @@ export class UsersService {
       where: { email },
     });
   }
+
+  // 1. Update hash refresh token di database (atau menghapusnya jika null)
+  async updateRefreshToken(userId: number, refreshToken: string | null) {
+    let hashedToken: string | null = null;
+    
+    if (refreshToken) {
+      hashedToken = await bcrypt.hash(refreshToken, 10);
+    }
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: hashedToken },
+    });
+  }
+
+  // 2. Bandingkan refresh token plain text vs hash yang disimpan di DB
+  async compareRefreshToken(userId: number, refreshToken: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || !user.refreshToken) {
+      return false;
+    }
+
+    return bcrypt.compare(refreshToken, user.refreshToken);
+  }
 }

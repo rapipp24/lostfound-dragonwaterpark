@@ -19,6 +19,29 @@ export class AuthService {
     return this.userService.CreateAdmin(data);
   }
 
+  // buat fungsi pembantu untuk menandatangani access token dan refresh token
+  async generateTokens(payload: {
+    id: number;
+    email: string;
+    fullName: string;
+    role: string;
+  }) {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: '15m', // Access token berumur pendek (15 Menit)
+      }),
+      this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_REFRESH_SECRET || 'DRAGON_REFRESH_SECRET',
+        expiresIn: '7d', // Refresh token berumur panjang (7 Hari)
+      }),
+    ]);
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
   async login(data: LoginDto) {
     // Pastikan menggunakan await di sini
     const user = await this.userService.findByEmail(data.email);
@@ -40,11 +63,14 @@ export class AuthService {
       role: user.role,
     };
 
-    const token = this.jwtService.sign(payload);
+    const tokens = await this.generateTokens(payload);
+
+    await this.userService.updateRefreshToken(user.id, tokens.refreshToken);
 
     return {
       message: 'Login berhasil',
-      access_token: token,
+      access_token: tokens.accessToken,
+      refresh_token: tokens.refreshToken,
       user: {
         fullName: user.fullName,
         email: user.email,
