@@ -11,6 +11,7 @@ import {
   Request,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
@@ -59,7 +60,23 @@ export class ReportsController {
           callback(null, `report-${uniqueSuffix}${ext}`);
         },
       }),
-    }),
+      // membuat saringan format berkas (Hanya gambar)
+      fileFilter: (req, file, callback) => {
+        const allowedTypes = /jpeg|jpg|png/;
+        const ext = extname(file.originalname).toLowerCase();
+        const mime = file.mimetype;
+
+        if (allowedTypes.test(ext) && allowedTypes.test(mime)) {
+          callback(null, true);
+        } else {
+          callback(new BadRequestException('Format berkas tidak diizinkan'), false);
+        }
+      },
+      // batasan ukuran maximal (2mb)
+      limits: {
+        fileSize: 2 * 1024 * 1024,
+      }
+    })
   )
   create(
     @Body() createReportDto: CreateReportDto,
