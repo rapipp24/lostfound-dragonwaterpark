@@ -12,6 +12,7 @@ import { ClaimsService } from './claims.service';
 import { CreateClaimDto } from './dto/create-claim.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('claims')
 @UseGuards(AuthGuard('jwt'))
@@ -24,6 +25,7 @@ export class ClaimsController {
   }
 
   @Get()
+  @Roles('admin')
   @UseGuards(RolesGuard)
   findAll(
     @Query('page') page: string = '1',
@@ -33,6 +35,7 @@ export class ClaimsController {
   }
 
   @Patch(':id/status')
+  @Roles('admin')
   @UseGuards(RolesGuard) //admin only
   updateStatus(@Param('id') id: string, @Body('status') status: string) {
     return this.claimsService.updateStatus(+id, status);
