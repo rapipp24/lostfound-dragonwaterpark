@@ -13,7 +13,7 @@ export default function UserLayout({
       <main className="flex-grow py-8">
         {children}
       </main>
-      <footer className="bg-white border-t py-8 text-center text-gray-500 text-sm">
+      <footer className="bg-white dark:bg-zinc-900 border-t py-8 text-center text-gray-500 text-sm">
         <p>&copy; 2026 Dragon Waterpark - Lost and Found System</p>
       </footer>
       <Toaster position="bottom-right" />

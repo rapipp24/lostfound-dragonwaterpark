@@ -85,7 +85,7 @@ export default function ReportDetailPage() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm border border-white/50">
+              <div className="absolute top-4 left-4 bg-white dark:bg-zinc-900/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm border border-white/50">
                 <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">REF #LF-{report.id.toString().padStart(3, '0')}</span>
               </div>
             </div>
@@ -105,17 +105,17 @@ export default function ReportDetailPage() {
               </p>
             </div>
 
-            <Card className="p-6 md:p-8 !rounded-[2rem] border-gray-100 shadow-sm bg-white/50">
+            <Card className="p-6 md:p-8 !rounded-[2rem] border-gray-100 shadow-sm bg-white dark:bg-zinc-900/50">
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <InfoItem
                   label="Lokasi Penemuan"
                   value={report.location}
-                  className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm"
+                  className="bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-gray-100 shadow-sm"
                 />
                 <InfoItem
                   label="Status"
                   value={report.status === 'Found' ? 'Siap Diklaim' : 'Selesai'}
-                  className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm"
+                  className="bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-gray-100 shadow-sm"
                 />
               </div>
               
@@ -137,7 +137,7 @@ export default function ReportDetailPage() {
                 </a>
                 <button 
                   onClick={handleShare}
-                  className="flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-100 py-4 rounded-2xl font-black text-sm hover:bg-gray-50 transition-all active:scale-95 shadow-sm"
+                  className="flex items-center justify-center gap-2 bg-white dark:bg-zinc-900 text-gray-700 border border-gray-100 py-4 rounded-2xl font-black text-sm hover:bg-gray-50 transition-all active:scale-95 shadow-sm"
                 >
                   <Share2 size={18} />
                   Bagikan

@@ -26,7 +26,7 @@ export default function Input({
       focus:ring-blue-500
       text-black
       placeholder:text-gray-400
-      bg-white"
+      bg-white dark:bg-zinc-900"
     />
   );
 }

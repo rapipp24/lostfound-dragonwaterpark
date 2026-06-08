@@ -128,7 +128,7 @@ export default function Page() {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-md">
+          <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] shadow-2xl w-full max-w-md">
             <h2 className="text-2xl font-black text-gray-800 mb-6 text-center text-blue-600">
               Register Claim
             </h2>

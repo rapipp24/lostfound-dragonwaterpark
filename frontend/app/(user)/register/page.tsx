@@ -32,7 +32,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex items-center justify-center min-h-[80vh] px-4">
-      <div className="w-full max-w-md p-8 border rounded-3xl shadow-xl bg-white">
+      <div className="w-full max-w-md p-8 border rounded-3xl shadow-xl bg-white dark:bg-zinc-900">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold text-gray-900">Daftar Akun</h1>
           <p className="text-gray-500 mt-2 text-sm">Buat akun untuk melacak laporan barang hilang Anda.</p>

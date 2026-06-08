@@ -7,7 +7,7 @@ import { Claim } from "../types/claim";
 
 export default function ClaimsTable({ claims, onUpdateStatus }: props) {
   return (
-    <div className="bg-white text-gray-800 rounded-lg shadow overflow-hidden">
+    <div className="bg-white dark:bg-zinc-900 text-gray-800 rounded-lg shadow overflow-hidden">
       <table className="w-full text-sm">
         <thead className="bg-gray-100">
           <tr>
