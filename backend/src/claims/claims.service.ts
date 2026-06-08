@@ -6,7 +6,7 @@ import { CreateClaimDto } from './dto/create-claim.dto';
 export class ClaimsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createClaimDto: CreateClaimDto) {
+  async create(createClaimDto: CreateClaimDto, userId?: number) {
     const report = await this.prisma.report.findUnique({
       where: { id: createClaimDto.reportId },
     });
@@ -20,6 +20,7 @@ export class ClaimsService {
         claimerName: createClaimDto.claimerName,
         claimerPhone: createClaimDto.claimerPhone,
         reportId: createClaimDto.reportId,
+        userId: userId || null,
       },
       include: {
         report: true,

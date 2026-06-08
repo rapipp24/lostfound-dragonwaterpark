@@ -7,6 +7,7 @@ import {
   Param,
   UseGuards,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ClaimsService } from './claims.service';
 import { CreateClaimDto } from './dto/create-claim.dto';
@@ -20,8 +21,8 @@ export class ClaimsController {
   constructor(private readonly claimsService: ClaimsService) {}
 
   @Post()
-  create(@Body() createClaimDto: CreateClaimDto) {
-    return this.claimsService.create(createClaimDto);
+  create(@Body() createClaimDto: CreateClaimDto, @Request() req: any) {
+    return this.claimsService.create(createClaimDto, req.user.id);
   }
 
   @Get()
