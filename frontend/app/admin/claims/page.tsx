@@ -12,6 +12,21 @@ import { getClaims, createClaim, updateClaimStatus } from "../../../services/cla
 import { getReports } from "../../../services/report.service";
 import toast from "react-hot-toast";
 
+type ClaimApiResponse = {
+  id: number;
+  claimerName: string;
+  claimerPhone: string;
+  status: string;
+  report?: {
+    item: string;
+  };
+};
+
+const getErrorMessage = (error: unknown, fallback: string) =>{
+  if (error instanceof Error) return error.message;
+  return fallback;
+};
+
 export default function Page() {
   const { user, isLogin, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -29,9 +44,9 @@ export default function Page() {
   const fetchData = async () => {
     try {
       const claimsResponse = await getClaims();
-      const claimsArray = claimsResponse.data || [];
+      const claimsArray : ClaimApiResponse[] = claimsResponse.data ?? [];
       
-      setClaims(claimsArray.map((c: any) => ({
+      setClaims(claimsArray.map((c) => ({
         id: c.id,
         claimer: c.claimerName,
         phone: c.claimerPhone,
@@ -42,24 +57,27 @@ export default function Page() {
       const reportsResponse = await getReports("Found");
       setReports(reportsResponse.data || []);
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching data:", error);
-      toast.error(error.message || "Gagal mengambil data");
+      toast.error(getErrorMessage(error, "Gagal mengambil data"));
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    // Hanya fetch data jika sudah login dan adalah ADMIN
+    const loadData = async () => {
     if (!authLoading) {
       if (!isLogin || user?.role !== "admin") {
         router.push("/login");
       } else {
-        fetchData();
+        await fetchData();
       }
     }
-  }, [isLogin, authLoading, user, router]);
+  };
+
+  loadData();
+}, [isLogin, authLoading, user, router]);
 
   const handleAddClaim = async () => {
     if (!claimerName || !claimerPhone || !selectedReportId) {
@@ -80,7 +98,8 @@ export default function Page() {
       setClaimerPhone("");
       setSelectedReportId("");
       fetchData();
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error(error);
       toast.error("Gagal menambah klaim");
     }
   };
@@ -90,7 +109,8 @@ export default function Page() {
       await updateClaimStatus(id, status);
       toast.success(`Klaim ${status}!`);
       fetchData();
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error(error);
       toast.error("Gagal update status");
     }
   };
@@ -164,7 +184,7 @@ export default function Page() {
                     <option key={r.id} value={r.id}>{r.item} (ID: {r.id})</option>
                   ))}
                 </select>
-                {reports.length === 0 && <p className="text-xs text-red-500 mt-2 font-bold">* Tidak ada barang berstatus 'Found'</p>}
+                {reports.length === 0 && <p className="text-xs text-red-500 mt-2 font-bold">* Tidak ada barang berstatus Found</p>}
               </div>
 
               <div className="flex gap-3 mt-8">
