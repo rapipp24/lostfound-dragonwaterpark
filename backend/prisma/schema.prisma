@@ -15,6 +15,7 @@ model User {
   role         String   @default("user")
   refreshToken String?
   reports      Report[]
+  claims       Claim[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -40,6 +41,8 @@ model Claim {
   status       String   @default("Pending") // Pending, Approved, Rejected
   report       Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
   reportId     Int
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
