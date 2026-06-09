@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -11,8 +12,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // 1. Cek Login (Satpam)
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    const userStr = localStorage.getItem("user");
+    const token = Cookies.get("access_token");
+    const userStr = Cookies.get("user");
     const user = userStr ? JSON.parse(userStr) : null;
 
     const isAuthPage = pathname === "/admin/login";
