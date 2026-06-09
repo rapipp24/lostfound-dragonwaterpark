@@ -1,6 +1,6 @@
 import { getCookie, removeCookie } from "../utils/cookies";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 const getHeaders = () => {
   const token = getCookie("access_token");
@@ -16,7 +16,7 @@ export const getMyReports = async () => {
       "Content-Type": "application/json",
     },
   });
-  
+
   if (response.status === 401) {
     removeCookie("access_token");
     removeCookie("user");
@@ -31,7 +31,7 @@ export const getReports = async (status?: string, search?: string) => {
   let url = `${BASE_URL}/reports?`;
   if (status) url += `status=${status}&`;
   if (search) url += `search=${search}&`;
-  
+
   const response = await fetch(url);
   if (!response.ok) throw new Error("Gagal mengambil daftar laporan");
   return response.json();
@@ -51,7 +51,7 @@ export const createReport = async (formData: FormData) => {
     headers: getHeaders(),
     body: formData,
   });
-  
+
   if (response.status === 401) {
     removeCookie("access_token");
     removeCookie("user");

@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export interface UserResponse {
   fullName: string;
@@ -16,9 +16,9 @@ export const loginUser = async (email: string, password: string): Promise<AuthRe
   const response = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
-      email: email.toLowerCase().trim(), 
-      password 
+    body: JSON.stringify({
+      email: email.toLowerCase().trim(),
+      password
     }),
   });
 
@@ -34,10 +34,10 @@ export const registerUser = async (fullName: string, email: string, password: st
   const response = await fetch(`${BASE_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
-      fullName, 
-      email: email.toLowerCase().trim(), 
-      password 
+    body: JSON.stringify({
+      fullName,
+      email: email.toLowerCase().trim(),
+      password
     }),
   });
 
