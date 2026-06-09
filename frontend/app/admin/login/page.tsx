@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -33,9 +34,9 @@ export default function AdminLoginPage() {
       }
 
       // Simpan Data
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      
+      Cookies.set("access_token", data.access_token);
+      Cookies.set("user", JSON.stringify(data.user));
+
       toast.success("Selamat datang, Admin!");
       router.push("/admin/dashboard");
     } catch (err: any) {
@@ -75,8 +76,8 @@ export default function AdminLoginPage() {
             required
           />
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white shadow-xl shadow-slate-200"
             disabled={loading}
           >
