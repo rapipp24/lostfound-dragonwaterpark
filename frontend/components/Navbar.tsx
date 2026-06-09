@@ -5,46 +5,25 @@ import Link from "next/link";
 
 import {
   usePathname,
-  useRouter,
 } from "next/navigation";
-
-import toast from "react-hot-toast";
 
 import { useAuth } from "../hooks/useAuth";
 
 export default function Navbar() {
 
   const {
+    user,
     isLogin,
     loading,
+    logout,
   } = useAuth();
 
   const pathname =
     usePathname();
 
-  const router =
-    useRouter();
-
   const isAuthPage =
     pathname === "/login" ||
     pathname === "/register";
-
-  function handleLogout() {
-
-    localStorage.removeItem(
-      "isLogin"
-    );
-
-    localStorage.removeItem(
-      "user"
-    );
-
-    toast.success(
-      "Logout berhasil!"
-    );
-
-    router.push("/login");
-  }
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50">
@@ -100,12 +79,28 @@ export default function Navbar() {
 
               isLogin ? (
 
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-500 text-white px-6 py-2.5 rounded-full text-sm font-black tracking-wide hover:bg-red-600 transition-all active:scale-95"
-                >
-                  LOGOUT
-                </button>
+                <div className="flex items-center gap-4">
+
+                  <div className="hidden md:block text-sm font-medium text-gray-600">
+
+                    Halo,{" "}
+
+                    <span className="font-bold text-blue-600">
+                      {user?.fullName || "User"}
+                    </span>
+
+                    👋
+
+                  </div>
+
+                  <button
+                    onClick={logout}
+                    className="bg-red-500 text-white px-6 py-2.5 rounded-full text-sm font-black tracking-wide hover:bg-red-600 transition-all active:scale-95"
+                  >
+                    LOGOUT
+                  </button>
+
+                </div>
 
               ) : (
 
