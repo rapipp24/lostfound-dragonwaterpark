@@ -78,12 +78,10 @@ export default function ReportDetailPage() {
           {/* Image Section - Compact Size (4/12 columns) */}
           <div className="md:col-span-5 lg:col-span-4">
             <div className="relative group">
-              <div className="aspect-square rounded-[2rem] overflow-hidden bg-gray-50 border border-gray-100 shadow-sm">
-                <ImageFallback
+              <div className="aspect-square rounded-[2rem] overflow-hidden bg-gray-50 border border-gray-100 shadow-sm cursor-pointer">
                   src={report.image}
                   alt={report.item}
                   className="w-full h-full object-cover"
-                />
               </div>
               <div className="absolute top-4 left-4 bg-white dark:bg-zinc-900/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm border border-white/50">
                 <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">REF #LF-{report.id.toString().padStart(3, '0')}</span>
@@ -127,14 +125,16 @@ export default function ReportDetailPage() {
               </div>
 
               <div className="grid sm:grid-cols-2 gap-3">
-                <a 
-                  href={`https://wa.me/628123456789?text=Halo Admin Dragon Waterpark, saya ingin mengklaim barang ${report.item} (ID: #LF-${report.id})`}
-                  target="_blank"
-                  className="flex items-center justify-center gap-2 bg-blue-600 text-white py-4 rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 active:scale-95"
-                >
-                  <MessageCircle size={18} />
+                {report.status === "Found" && (
+              <a
+                href={`https://wa.me/628123456789?text=Halo Admin Dragon Waterpark, saya ingin mengklaim barang ${report.item} (ID: #LF-${report.id})`}
+                target="_blank"
+                className="flex items-center justify-center gap-2 bg-blue-600 text-white py-4 rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 active:scale-95"
+              >
+                <MessageCircle size={18} />
                   Klaim via WhatsApp
-                </a>
+            </a>
+            )}
                 <button 
                   onClick={handleShare}
                   className="flex items-center justify-center gap-2 bg-white dark:bg-zinc-900 text-gray-700 border border-gray-100 py-4 rounded-2xl font-black text-sm hover:bg-gray-50 transition-all active:scale-95 shadow-sm"
