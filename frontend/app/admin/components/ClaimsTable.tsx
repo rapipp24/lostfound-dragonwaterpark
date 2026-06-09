@@ -20,7 +20,7 @@ export default function ClaimsTable({ claims, onUpdateStatus }: props) {
         </thead>
 
         <tbody>
-          {claims.map((claim) => (
+          {filteredClaims.map((claim) => (
             <tr key={claim.id} className="border-t hover:bg-gray-50">
               <td className="p-4">{claim.id}</td>
               <td className="p-4">

@@ -14,6 +14,9 @@ export default function ClaimHistoryPage() {
   const [loading, setLoading] =
     useState(true);
 
+  const [statusFilter, setStatusFilter] =
+    useState("all");
+
   const router =
     useRouter();
 
@@ -21,6 +24,15 @@ export default function ClaimHistoryPage() {
     isLogin,
     loading: authLoading,
   } = useAuth();
+
+  const filteredClaims =
+  statusFilter === "all"
+    ? claims
+    : claims.filter(
+        (claim) =>
+          claim.status?.toLowerCase() ===
+          statusFilter
+      );
 
   const getStatusStyle = (
     status: string
@@ -120,6 +132,62 @@ export default function ClaimHistoryPage() {
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
 
+    <div className="flex flex-wrap gap-3 mb-6">
+
+  <button
+    onClick={() =>
+      setStatusFilter("all")
+    }
+    className={`px-4 py-2 rounded-full text-sm font-bold ${
+      statusFilter === "all"
+        ? "bg-blue-600 text-white"
+        : "bg-gray-100 text-gray-600"
+    }`}
+  >
+    Semua
+  </button>
+
+  <button
+    onClick={() =>
+      setStatusFilter("pending")
+    }
+    className={`px-4 py-2 rounded-full text-sm font-bold ${
+      statusFilter === "pending"
+        ? "bg-yellow-500 text-white"
+        : "bg-gray-100 text-gray-600"
+    }`}
+  >
+    Pending
+  </button>
+
+  <button
+    onClick={() =>
+      setStatusFilter("approved")
+    }
+    className={`px-4 py-2 rounded-full text-sm font-bold ${
+      statusFilter === "approved"
+        ? "bg-green-600 text-white"
+        : "bg-gray-100 text-gray-600"
+    }`}
+  >
+    Approved
+  </button>
+
+  <button
+    onClick={() =>
+      setStatusFilter("rejected")
+    }
+    className={`px-4 py-2 rounded-full text-sm font-bold ${
+      statusFilter === "rejected"
+        ? "bg-red-600 text-white"
+        : "bg-gray-100 text-gray-600"
+    }`}
+  >
+    Rejected
+  </button>
+
+</div>
+
   <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 text-center">
     <p className="text-xs text-gray-500 font-semibold">
       Total Claim
@@ -161,7 +229,7 @@ export default function ClaimHistoryPage() {
 
 </div>
 
-      {claims.length === 0 ? (
+      {filteredClaims.length === 0 ? (
 
         <div className="border rounded-xl p-10 text-center">
 
