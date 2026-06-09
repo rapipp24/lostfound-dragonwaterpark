@@ -22,6 +22,25 @@ export default function ClaimHistoryPage() {
     loading: authLoading,
   } = useAuth();
 
+  const getStatusStyle = (
+    status: string
+  ) => {
+
+    switch (
+      status?.toLowerCase()
+    ) {
+
+      case "approved":
+        return "bg-green-100 text-green-600";
+
+      case "rejected":
+        return "bg-red-100 text-red-600";
+
+      default:
+        return "bg-yellow-100 text-yellow-600";
+    }
+  };
+
   useEffect(() => {
 
     if (
@@ -53,11 +72,6 @@ export default function ClaimHistoryPage() {
 
         const data =
           await getClaims();
-
-        console.log(
-          "CLAIMS:",
-          data
-        );
 
         setClaims(
           Array.isArray(data)
@@ -91,8 +105,8 @@ export default function ClaimHistoryPage() {
   ) {
 
     return (
-      <div className="max-w-4xl mx-auto py-10">
-        Loading...
+      <div className="max-w-4xl mx-auto py-20 flex justify-center">
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -106,8 +120,20 @@ export default function ClaimHistoryPage() {
 
       {claims.length === 0 ? (
 
-        <div className="border rounded-xl p-6 text-center text-gray-500">
-          Belum ada data claim
+        <div className="border rounded-xl p-10 text-center">
+
+          <div className="text-5xl mb-4">
+            📦
+          </div>
+
+          <h2 className="font-bold text-xl mb-2">
+            Belum Ada Claim
+          </h2>
+
+          <p className="text-gray-500">
+            Claim yang kamu kirim akan muncul di sini
+          </p>
+
         </div>
 
       ) : (
@@ -118,23 +144,28 @@ export default function ClaimHistoryPage() {
 
             <div
               key={claim.id}
-              className="border rounded-xl p-4 shadow-sm"
+              className="border rounded-xl p-5 shadow-sm hover:shadow-md transition"
             >
 
               <h2 className="font-bold text-lg">
                 {claim.claimerName}
               </h2>
 
-              <p>
+              <p className="text-gray-600">
                 {claim.claimerPhone}
               </p>
 
-              <p className="mt-2">
-                Status:
-                <span className="font-semibold ml-2">
+              <div className="mt-3">
+
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusStyle(
+                    claim.status
+                  )}`}
+                >
                   {claim.status}
                 </span>
-              </p>
+
+              </div>
 
             </div>
 
