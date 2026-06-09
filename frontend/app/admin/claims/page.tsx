@@ -22,7 +22,7 @@ type ClaimApiResponse = {
   };
 };
 
-const getErrorMessage = (error: unknown, fallback: string) =>{
+const getErrorMessage = (error: unknown, fallback: string) => {
   if (error instanceof Error) return error.message;
   return fallback;
 };
@@ -44,8 +44,8 @@ export default function Page() {
   const fetchData = async () => {
     try {
       const claimsResponse = await getClaims();
-      const claimsArray : ClaimApiResponse[] = claimsResponse.data ?? [];
-      
+      const claimsArray: ClaimApiResponse[] = claimsResponse.data ?? [];
+
       setClaims(claimsArray.map((c) => ({
         id: c.id,
         claimer: c.claimerName,
@@ -56,7 +56,7 @@ export default function Page() {
 
       const reportsResponse = await getReports("Found");
       setReports(reportsResponse.data || []);
-      
+
     } catch (error: unknown) {
       console.error("Error fetching data:", error);
       toast.error(getErrorMessage(error, "Gagal mengambil data"));
@@ -67,17 +67,17 @@ export default function Page() {
 
   useEffect(() => {
     const loadData = async () => {
-    if (!authLoading) {
-      if (!isLogin || user?.role !== "admin") {
-        router.push("/login");
-      } else {
-        await fetchData();
+      if (!authLoading) {
+        if (!isLogin || user?.role !== "admin") {
+          router.push("/admin/login");
+        } else {
+          await fetchData();
+        }
       }
-    }
-  };
+    };
 
-  loadData();
-}, [isLogin, authLoading, user, router]);
+    loadData();
+  }, [isLogin, authLoading, user, router]);
 
   const handleAddClaim = async () => {
     if (!claimerName || !claimerPhone || !selectedReportId) {
@@ -91,7 +91,7 @@ export default function Page() {
         claimerPhone,
         reportId: Number(selectedReportId)
       });
-      
+
       toast.success("Klaim berhasil didaftarkan!");
       setIsModalOpen(false);
       setClaimerName("");
@@ -117,7 +117,7 @@ export default function Page() {
 
   const filteredClaims = claims.filter((claim) =>
     claim.claimer.toLowerCase().includes(search.toLowerCase()) ||
-    claim.item.toLowerCase().includes(search.toLowerCase()) ||  
+    claim.item.toLowerCase().includes(search.toLowerCase()) ||
     claim.status.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -174,7 +174,7 @@ export default function Page() {
 
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1 ml-1">Pilih Barang Temuan</label>
-                <select 
+                <select
                   className="w-full border border-gray-100 p-4 rounded-2xl bg-gray-50 focus:ring-4 focus:ring-blue-50 focus:border-blue-200 outline-none text-black font-medium transition-all"
                   value={selectedReportId}
                   onChange={(e) => setSelectedReportId(Number(e.target.value))}
@@ -194,7 +194,7 @@ export default function Page() {
                 >
                   Submit Klaim
                 </button>
-                <button 
+                <button
                   className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black hover:bg-gray-200 transition active:scale-95"
                   onClick={() => setIsModalOpen(false)}
                 >
