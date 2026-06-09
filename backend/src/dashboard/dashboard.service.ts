@@ -6,12 +6,35 @@ export class DashboardService {
   constructor(private prisma: PrismaService) {}
 
   async getSummary() {
-    // Kembalikan objek tiruan awal agar tidak terjadi eror kompilasi
+    const [
+      totalReports,
+      totalClaims,
+      pendingClaims,
+      claimedReports,
+      approvedClaims,
+      rejectedClaims,
+      foundReports,
+      pendingReports,
+    ] = await Promise.all([
+      this.prisma.report.count(),
+      this.prisma.claim.count(),
+      this.prisma.claim.count({ where: { status: 'Pending' } }),
+      this.prisma.report.count({ where: { status: 'Claimed' } }),
+      this.prisma.claim.count({ where: { status: 'Approved' } }),
+      this.prisma.claim.count({ where: { status: 'Rejected' } }),
+      this.prisma.report.count({ where: { status: 'Found' } }),
+      this.prisma.report.count({ where: { status: 'Pending' } }),
+    ]);
+
     return {
-      totalReports: 0,
-      totalClaims: 0,
-      pendingClaims: 0,
-      claimedReports: 0,
+      totalReports,
+      totalClaims,
+      pendingClaims,
+      claimedReports,
+      approvedClaims,
+      rejectedClaims,
+      foundReports,
+      pendingReports,
     };
   }
 }
