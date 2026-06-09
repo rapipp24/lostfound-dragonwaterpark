@@ -45,9 +45,10 @@ export default function AddReportPage() {
     setIsSubmitting(true);
 
     const token = Cookies.get("access_token");
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
     try {
-      const response = await fetch("http://localhost:3000/reports", {
+      const response = await fetch(`${API_URL}/reports`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

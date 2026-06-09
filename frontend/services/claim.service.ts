@@ -1,6 +1,6 @@
 import { getCookie, removeCookie } from "../utils/cookies";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 const getHeaders = () => {
   const token = getCookie("access_token");
@@ -14,7 +14,7 @@ export const getClaims = async () => {
   const response = await fetch(`${BASE_URL}/claims`, {
     headers: getHeaders(),
   });
-  
+
   if (response.status === 401) {
     removeCookie("access_token");
     removeCookie("user");

@@ -8,8 +8,10 @@ type Props = {
 export default function ReportsTable({ reports }: Props) {
   const updateStatus = async (id: number, newStatus: string) => {
     const token = Cookies.get("access_token");
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
     try {
-      const response = await fetch(`http://localhost:3000/reports/${id}/status`, {
+      const response = await fetch(`${API_URL}/reports/${id}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
