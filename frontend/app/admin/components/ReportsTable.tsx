@@ -1,4 +1,5 @@
 import { Report } from "../types/report";
+import Cookies from "js-cookie";
 
 type Props = {
   reports: Report[];
@@ -6,7 +7,7 @@ type Props = {
 
 export default function ReportsTable({ reports }: Props) {
   const updateStatus = async (id: number, newStatus: string) => {
-    const token = localStorage.getItem("access_token");
+    const token = Cookies.get("access_token");
     try {
       const response = await fetch(`http://localhost:3000/reports/${id}/status`, {
         method: "PATCH",
@@ -46,18 +47,17 @@ export default function ReportsTable({ reports }: Props) {
               <td className="p-4 font-semibold">{report.item}</td>
               <td className="p-4">{report.location}</td>
               <td className="p-4">
-                <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                  report.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 
-                  report.status === 'Found' ? 'bg-green-100 text-green-700' : 
-                  'bg-blue-100 text-blue-700'
-                }`}>
+                <span className={`px-2 py-1 rounded-full text-xs font-bold ${report.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
+                  report.status === 'Found' ? 'bg-green-100 text-green-700' :
+                    'bg-blue-100 text-blue-700'
+                  }`}>
                   {report.status}
                 </span>
               </td>
               <td className="p-4">
                 <div className="flex gap-2">
                   {report.status === "Pending" && (
-                    <button 
+                    <button
                       onClick={() => updateStatus(report.id, "Found")}
                       className="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
                     >
@@ -65,7 +65,7 @@ export default function ReportsTable({ reports }: Props) {
                     </button>
                   )}
                   {report.status === "Found" && (
-                    <button 
+                    <button
                       onClick={() => updateStatus(report.id, "Claimed")}
                       className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
                     >

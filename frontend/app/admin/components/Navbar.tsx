@@ -1,11 +1,16 @@
 "use client";
 
 import { Bell, User, LogOut } from "lucide-react";
+import Cookies from "js-cookie";
 
 export default function Navbar() {
   const handleLogout = () => {
+    Cookies.remove("access_token");
+    Cookies.remove("user");
+
     localStorage.removeItem("access_token");
     localStorage.removeItem("user");
+
     window.location.href = "/admin/login";
   };
 
@@ -38,7 +43,7 @@ export default function Navbar() {
           <div className="w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center font-bold shadow-lg shadow-gray-200">
             A
           </div>
-          <button 
+          <button
             onClick={handleLogout}
             className="p-2.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
             title="Keluar"

@@ -7,11 +7,12 @@ import Container from "../../../../components/shared/Container";
 import AccessDenied from "../../../../components/shared/AccessDenied";
 import { PackagePlus, ArrowLeft, Save, MapPin, AlignLeft, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 export default function AddReportPage() {
   const router = useRouter();
   const { isLogin, user, loading: authLoading } = useAuth();
-  
+
   const [item, setItem] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
@@ -42,8 +43,8 @@ export default function AddReportPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    const token = localStorage.getItem("access_token");
+
+    const token = Cookies.get("access_token");
 
     try {
       const response = await fetch("http://localhost:3000/reports", {
@@ -52,9 +53,9 @@ export default function AddReportPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ 
-          item, 
-          location, 
+        body: JSON.stringify({
+          item,
+          location,
           description,
           status: "Found"
         }),
@@ -92,7 +93,7 @@ export default function AddReportPage() {
   return (
     <Container className="bg-gray-50/50 min-h-screen py-12">
       <div className="max-w-3xl mx-auto">
-        <button 
+        <button
           onClick={() => router.back()}
           className="group flex items-center gap-2 text-gray-400 hover:text-blue-600 font-bold text-sm mb-8 transition-all"
         >
@@ -121,8 +122,8 @@ export default function AddReportPage() {
                   <PackagePlus size={16} className="text-blue-600" />
                   Nama Barang
                 </label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="w-full bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-4 focus:ring-blue-50 transition-all font-bold text-gray-900 placeholder:text-gray-300"
                   placeholder="Misal: Kacamata Renang Speedo Biru"
                   value={item}
@@ -136,8 +137,8 @@ export default function AddReportPage() {
                   <MapPin size={16} className="text-blue-600" />
                   Lokasi Penemuan
                 </label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="w-full bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-4 focus:ring-blue-50 transition-all font-bold text-gray-900 placeholder:text-gray-300"
                   placeholder="Misal: Dekat Pancuran Area Anak"
                   value={location}
@@ -151,7 +152,7 @@ export default function AddReportPage() {
                   <AlignLeft size={16} className="text-blue-600" />
                   Deskripsi & Ciri Khusus
                 </label>
-                <textarea 
+                <textarea
                   className="w-full bg-gray-50 border-none p-5 rounded-3xl outline-none focus:ring-4 focus:ring-blue-50 transition-all font-medium text-gray-700 placeholder:text-gray-300 min-h-[150px]"
                   placeholder="Tuliskan warna, merk, kondisi, atau ciri khusus lainnya..."
                   value={description}
@@ -166,9 +167,9 @@ export default function AddReportPage() {
                 <ShieldAlert size={16} />
                 <span className="text-[10px] font-black uppercase tracking-widest">Aksi ini bersifat permanen</span>
               </div>
-              
-              <button 
-                type="submit" 
+
+              <button
+                type="submit"
                 disabled={isSubmitting}
                 className="bg-blue-600 text-white px-10 py-4.5 rounded-2xl text-sm font-black tracking-widest hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200 transition-all active:scale-95 flex items-center gap-3 disabled:opacity-50 disabled:scale-100"
               >
