@@ -118,6 +118,49 @@ export default function ClaimHistoryPage() {
         Riwayat Claim
       </h1>
 
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+  <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 text-center">
+    <p className="text-xs text-gray-500 font-semibold">
+      Total Claim
+    </p>
+    <h2 className="text-3xl font-black text-blue-600 mt-1">
+      {claims.length}
+    </h2>
+  </div>
+
+  <div className="bg-yellow-50 border border-yellow-100 rounded-2xl p-5 text-center">
+    <p className="text-xs text-gray-500 font-semibold">
+      Pending
+    </p>
+    <h2 className="text-3xl font-black text-yellow-600 mt-1">
+      {
+        claims.filter(
+          (claim) =>
+            claim.status?.toLowerCase() ===
+            "pending"
+        ).length
+      }
+    </h2>
+  </div>
+
+  <div className="bg-green-50 border border-green-100 rounded-2xl p-5 text-center">
+    <p className="text-xs text-gray-500 font-semibold">
+      Approved
+    </p>
+    <h2 className="text-3xl font-black text-green-600 mt-1">
+      {
+        claims.filter(
+          (claim) =>
+            claim.status?.toLowerCase() ===
+            "approved"
+        ).length
+      }
+    </h2>
+  </div>
+
+</div>
+
       {claims.length === 0 ? (
 
         <div className="border rounded-xl p-10 text-center">
