@@ -66,8 +66,17 @@ export default function ReportsPage() {
           <EmptyState message={`Terjadi kesalahan: ${error}`} />
         ) : reports.length === 0 ? (
           <div className="bg-white rounded-[2rem] p-20 text-center border border-gray-100 shadow-sm max-w-2xl mx-auto">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Tidak Ada Hasil</h2>
-            <p className="text-gray-500">Coba gunakan kata kunci lain.</p>
+            <div className="text-6xl mb-4">
+            📦
+          </div>
+
+          <h2 className="text-xl font-bold text-gray-900 mb-2">
+            Barang Tidak Ditemukan
+          </h2>
+
+          <p className="text-gray-500">
+            Coba gunakan kata kunci lain.
+          </p>
           </div>
         ) : (
           /* Grid with max-width per card to prevent giant cards */
@@ -82,9 +91,13 @@ export default function ReportsPage() {
                     
                     {/* Status Pill */}
                     <div className="absolute top-4 right-4">
-                      <span className="text-[9px] font-black uppercase tracking-widest bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm text-emerald-600 border border-white">
-                        {report.status}
-                      </span>
+                      <span
+                      className={`text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm ${getStatusColor(
+                      report.status
+                    )}`}
+                      >
+                      {report.status}
+                        </span>
                     </div>
                   </div>
 
@@ -104,7 +117,19 @@ export default function ReportsPage() {
                       </div>
                       <div className="bg-gray-50/80 p-3 rounded-2xl border border-gray-100/50 text-center">
                         <p className="text-[8px] font-black text-gray-300 uppercase tracking-widest mb-0.5">Tanggal</p>
-                        <p className="text-[10px] font-bold text-gray-600">12 Mei</p>
+                        <p className="text-[10px] font-bold text-gray-600">
+  {report.createdAt
+    ? new Date(
+        report.createdAt
+      ).toLocaleDateString(
+        "id-ID",
+        {
+          day: "numeric",
+          month: "short",
+        }
+      )
+    : "-"}
+</p>
                       </div>
                     </div>
 
