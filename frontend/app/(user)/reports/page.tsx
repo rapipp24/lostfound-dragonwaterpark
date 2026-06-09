@@ -9,6 +9,26 @@ import Container from "../../../components/shared/Container";
 import { Search, MapPin, Image as ImageIcon } from "lucide-react";
 
 export default function ReportsPage() {
+
+  const getStatusColor = (
+    status: string
+  ) => {
+
+    switch (
+      status?.toLowerCase()
+    ) {
+
+      case "found":
+        return "bg-green-100 text-green-600";
+
+      case "claimed":
+        return "bg-blue-100 text-blue-600";
+
+      default:
+        return "bg-gray-100 text-gray-600";
+    }
+  };
+
   const [search, setSearch] = useState("");
   const { reports, loading, error } = useReports("Found", false, search);
 
