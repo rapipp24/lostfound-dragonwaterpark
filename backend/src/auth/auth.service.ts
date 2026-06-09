@@ -95,7 +95,7 @@ export class AuthService {
   async refresh(userId: number, email: string, fullName: string, role: string) {
     const payload = { id: userId, email, fullName, role };
     const tokens = await this.generateTokens(payload);
-    
+
     // Perbarui hash refresh token baru di database
     await this.userService.updateRefreshToken(userId, tokens.refreshToken);
 
