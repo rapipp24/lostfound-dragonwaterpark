@@ -62,11 +62,12 @@ export class ReportsController {
       }),
       // membuat saringan format berkas (Hanya gambar)
       fileFilter: (req, file, callback) => {
-        const allowedTypes = /jpeg|jpg|png/;
+        const allowedExts = /^\.(jpg|jpeg|png)$/;
+        const allowedMimes = /^image\/(jpeg|png|jpg)$/;
         const ext = extname(file.originalname).toLowerCase();
         const mime = file.mimetype;
 
-        if (allowedTypes.test(ext) && allowedTypes.test(mime)) {
+        if (allowedExts.test(ext) && allowedMimes.test(mime)) {
           callback(null, true);
         } else {
           callback(new BadRequestException('Format berkas tidak diizinkan'), false);

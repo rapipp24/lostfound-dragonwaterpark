@@ -29,6 +29,12 @@ export class UsersService {
   }
 
   async CreateAdmin(data: RegisterDto) {
+    // Cek apakah email sudah terdaftar
+    const existingUser = await this.findByEmail(data.email);
+    if (existingUser) {
+      throw new ConflictException('Email sudah terdaftar');
+    }
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const user = await this.prisma.user.create({
       data: {
