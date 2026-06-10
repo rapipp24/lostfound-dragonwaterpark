@@ -251,7 +251,7 @@ export default function ClaimHistoryPage() {
 
         <div className="space-y-4">
 
-          {claims.map((claim) => (
+          {filteredClaims.map((claim) => (
 
             <div
               key={claim.id}
