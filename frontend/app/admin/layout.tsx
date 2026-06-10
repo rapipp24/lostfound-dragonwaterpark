@@ -22,6 +22,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if ((!token || user?.role !== "admin") && !isAuthPage) {
       router.push("/admin/login");
     }
+
+    // Jika sudah login dan berniat akses halaman login, lempar ke dashboard
+    if (token && user?.role === "admin" && isAuthPage) {
+      router.push("/admin/dashboard");
+    }
   }, [pathname, router]);
 
   // 2. Logika Tampilan: Hilangkan Sidebar di Login
