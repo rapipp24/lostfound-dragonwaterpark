@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ClaimsService } from './claims.service';
 import { CreateClaimDto } from './dto/create-claim.dto';
+import { UpdateClaimStatusDto } from './dto/update-claim-status.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -38,7 +39,10 @@ export class ClaimsController {
   @Patch(':id/status')
   @Roles('admin')
   @UseGuards(RolesGuard) //admin only
-  updateStatus(@Param('id') id: string, @Body('status') status: string) {
-    return this.claimsService.updateStatus(+id, status);
+  updateStatus(
+    @Param('id') id: string,
+    @Body() dto: UpdateClaimStatusDto,
+  ) {
+    return this.claimsService.updateStatus(+id, dto.status);
   }
 }
