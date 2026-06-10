@@ -1,9 +1,8 @@
-export const loginAdmin = async (email: string, password: string) => {
-  // Ganti URL ini dengan URL API backend kamu nantinya
-  const API_URL = "http://localhost:3000/auth/login";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
+export const loginAdmin = async (email: string, password: string) => {
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -30,10 +29,8 @@ export const registerAdmin = async (
   email: string,
   password: string,
 ) => {
-  const API_URL = "http://localhost:3000/api/auth/register";
-
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(`${BASE_URL}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password }),
