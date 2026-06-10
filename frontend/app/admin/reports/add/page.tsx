@@ -48,18 +48,17 @@ export default function AddReportPage() {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
     try {
+      const formData = new FormData();
+      formData.append("item", item);
+      formData.append("location", location);
+      formData.append("description", description);
+
       const response = await fetch(`${API_URL}/reports`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          item,
-          location,
-          description,
-          status: "Found"
-        }),
+        body: formData,
       });
 
       if (!response.ok) throw new Error("Gagal menyimpan laporan");
