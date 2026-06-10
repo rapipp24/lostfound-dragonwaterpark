@@ -34,6 +34,7 @@ export class AuthController {
   }
 
   @Post('create-admin')
+  @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   createAdmin(@Body() RegisterDto: RegisterDto) {
     return this.authService.CreateAdmin(RegisterDto);
