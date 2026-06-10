@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { UsersService } from '../users/users.service';
+import { JwtPayload } from './jwt.strategy';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
@@ -15,7 +16,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
     });
   }
 
-  async validate(req: Request, payload: any) {
+  async validate(req: Request, payload: JwtPayload) {
     // Ekstrak token mentah dari Header
     const authHeader = req.get('authorization');
     if (!authHeader) {

@@ -6,6 +6,7 @@ import { RolesGuard } from './roles.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtRefreshGuard } from './jwt-refresh.guard';
 import { Roles } from './roles.decorator';
+import { JwtPayload } from './jwt.strategy';
 
 @Controller('auth')
 export class AuthController {
@@ -42,13 +43,13 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
-  async logout(@Request() req: any) {
+  async logout(@Request() req: { user: JwtPayload }) {
     return this.authService.logout(req.user.id);
   }
 
   @Post('refresh')
   @UseGuards(JwtRefreshGuard)
-  async refresh(@Request() req: any) {
+  async refresh(@Request() req: { user: JwtPayload }) {
     return this.authService.refresh(
       req.user.id,
       req.user.email,

@@ -2,6 +2,7 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { RegisterDto } from '../auth/dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +25,7 @@ export class UsersService {
         role: 'user',
       },
     });
-    delete (user as any).password;
+    delete (user as Partial<User>).password;
     return user;
   }
 
@@ -44,7 +45,7 @@ export class UsersService {
         role: 'admin', // role defaultnya admin
       },
     });
-    delete (user as any).password;
+    delete (user as Partial<User>).password;
     return user;
   }
 
