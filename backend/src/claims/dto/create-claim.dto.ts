@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, Matches } from 'class-validator';
 
 export class CreateClaimDto {
   @IsNotEmpty()
@@ -7,6 +7,9 @@ export class CreateClaimDto {
 
   @IsNotEmpty()
   @IsString()
+  @Matches(/^08[0-9]{8,13}$/, {
+    message: 'Nomor telepon harus diawali 08 dan berisi 10-15 digit angka',
+  })
   claimerPhone: string;
 
   @IsNotEmpty()
