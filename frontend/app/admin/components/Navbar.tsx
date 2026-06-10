@@ -4,7 +4,24 @@ import { Bell, User, LogOut } from "lucide-react";
 import Cookies from "js-cookie";
 
 export default function Navbar() {
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const token = Cookies.get("access_token");
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+    if (token) {
+      try {
+        await fetch(`${API_URL}/auth/logout`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+      } catch (err) {
+        console.error("Gagal logout di backend:", err);
+      }
+    }
+
     Cookies.remove("access_token");
     Cookies.remove("user");
 
