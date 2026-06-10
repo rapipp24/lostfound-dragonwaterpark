@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
+import { UpdateReportStatusDto } from './dto/update-report-status.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -93,8 +94,11 @@ export class ReportsController {
   @Patch(':id/status')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  updateStatus(@Param('id') id: string, @Body('status') status: string) {
-    return this.reportsService.updateStatus(+id, status);
+  updateStatus(
+    @Param('id') id: string,
+    @Body() dto: UpdateReportStatusDto,
+  ) {
+    return this.reportsService.updateStatus(+id, dto.status);
   }
 
   @Delete(':id')
