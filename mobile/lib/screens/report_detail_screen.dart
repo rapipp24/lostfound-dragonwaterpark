@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'claim_history_screen.dart';
 
 class ReportDetailScreen extends StatelessWidget {
   const ReportDetailScreen({super.key});
@@ -12,17 +13,14 @@ class ReportDetailScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Container(
               height: 220,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
-                borderRadius:
-                    BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.image,
@@ -56,6 +54,27 @@ class ReportDetailScreen extends StatelessWidget {
 
             const Text(
               "Deskripsi barang temuan akan tampil di sini.",
+            ),
+
+            const SizedBox(height: 30),
+
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const ClaimHistoryScreen(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  "CLAIM BARANG",
+                ),
+              ),
             ),
           ],
         ),

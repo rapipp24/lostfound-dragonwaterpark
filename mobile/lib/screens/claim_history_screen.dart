@@ -1,64 +1,30 @@
 import 'package:flutter/material.dart';
 
-class ReportDetailScreen extends StatelessWidget {
-  const ReportDetailScreen({super.key});
+class ClaimHistoryScreen extends StatelessWidget {
+  const ClaimHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Detail Barang"),
+        title: const Text("Riwayat Claim"),
       ),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-          children: [
-
-            Container(
-              height: 220,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius:
-                    BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.image,
-                size: 80,
-              ),
+        children: const [
+          Card(
+            child: ListTile(
+              title: Text("Dompet Hitam"),
+              subtitle: Text("Pending"),
             ),
-
-            const SizedBox(height: 20),
-
-            const Text(
-              "Dompet Hitam",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+          ),
+          Card(
+            child: ListTile(
+              title: Text("iPhone 13"),
+              subtitle: Text("Approved"),
             ),
-
-            const SizedBox(height: 10),
-
-            const Text(
-              "Lokasi: Area Kolam Utama",
-            ),
-
-            const SizedBox(height: 10),
-
-            const Text(
-              "Status: Found",
-            ),
-
-            const SizedBox(height: 20),
-
-            const Text(
-              "Deskripsi barang temuan akan tampil di sini.",
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
