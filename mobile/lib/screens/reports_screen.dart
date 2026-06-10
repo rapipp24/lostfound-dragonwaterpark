@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'report_detail_screen.dart';
 
 class ReportsScreen extends StatelessWidget {
   const ReportsScreen({super.key});
@@ -11,20 +12,42 @@ class ReportsScreen extends StatelessWidget {
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
-        children: const [
+        children: [
           Card(
             child: ListTile(
-              leading: Icon(Icons.inventory),
-              title: Text("Dompet Hitam"),
-              subtitle: Text("Area Kolam Utama"),
+              leading: const Icon(Icons.inventory),
+              title: const Text("Dompet Hitam"),
+              subtitle: const Text("Area Kolam Utama"),
+
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        const ReportDetailScreen(),
+                  ),
+                );
+              },
             ),
           ),
 
           Card(
             child: ListTile(
-              leading: Icon(Icons.phone_android),
-              title: Text("iPhone 13"),
-              subtitle: Text("Dekat Loket"),
+              leading: const Icon(
+                Icons.phone_android,
+              ),
+              title: const Text("iPhone 13"),
+              subtitle: const Text("Dekat Loket"),
+
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        const ReportDetailScreen(),
+                  ),
+                );
+              },
             ),
           ),
         ],
