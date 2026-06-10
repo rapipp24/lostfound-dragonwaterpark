@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import DashboardCard from "../components/DashboardCard";
 
 type DashboardSummary = {
@@ -22,10 +23,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const token =
-          typeof window !== "undefined"
-            ? (await import("js-cookie")).default.get("access_token")
-            : undefined;
+        const token = Cookies.get("access_token");
 
         const API_URL =
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
