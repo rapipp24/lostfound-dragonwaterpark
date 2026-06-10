@@ -23,8 +23,9 @@ class ReportService {
       );
     }
 
-    return jsonDecode(
-      response.body,
-    );
+    final result =
+    jsonDecode(response.body);
+
+return result["data"];
   }
 }
