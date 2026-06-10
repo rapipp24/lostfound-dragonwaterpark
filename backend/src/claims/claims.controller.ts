@@ -15,6 +15,7 @@ import { UpdateClaimStatusDto } from './dto/update-claim-status.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
+import { JwtPayload } from '../auth/jwt.strategy';
 
 @Controller('claims')
 @UseGuards(AuthGuard('jwt'))
@@ -22,7 +23,7 @@ export class ClaimsController {
   constructor(private readonly claimsService: ClaimsService) {}
 
   @Post()
-  create(@Body() createClaimDto: CreateClaimDto, @Request() req: any) {
+  create(@Body() createClaimDto: CreateClaimDto, @Request() req: { user: JwtPayload }) {
     return this.claimsService.create(createClaimDto, req.user.id);
   }
 

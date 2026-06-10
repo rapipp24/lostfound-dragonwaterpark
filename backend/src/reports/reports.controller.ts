@@ -22,6 +22,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { Roles } from '../auth/roles.decorator';
+import { JwtPayload } from '../auth/jwt.strategy';
+
+interface MulterFile {
+  filename: string;
+}
 
 @Controller('reports')
 export class ReportsController {
@@ -39,7 +44,7 @@ export class ReportsController {
 
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
-  findMyReports(@Request() req: any) {
+  findMyReports(@Request() req: { user: JwtPayload }) {
     return this.reportsService.findByUser(req.user.id);
   }
 
@@ -82,8 +87,8 @@ export class ReportsController {
   )
   create(
     @Body() createReportDto: CreateReportDto,
-    @Request() req: any,
-    @UploadedFile() file?: any,
+    @Request() req: { user: JwtPayload },
+    @UploadedFile() file?: MulterFile,
   ) {
     const imagePath = file
       ? `http://localhost:3000/uploads/${file.filename}`
