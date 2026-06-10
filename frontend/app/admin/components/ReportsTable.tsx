@@ -1,31 +1,21 @@
 import { Report } from "../types/report";
-import Cookies from "js-cookie";
+import { updateReportStatus } from "../../../services/report.service";
+import toast from "react-hot-toast";
 
 type Props = {
   reports: Report[];
+  onRefresh: () => void;
 };
 
-export default function ReportsTable({ reports }: Props) {
-  const updateStatus = async (id: number, newStatus: string) => {
-    const token = Cookies.get("access_token");
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
+export default function ReportsTable({ reports, onRefresh }: Props) {
+  const handleUpdateStatus = async (id: number, newStatus: string) => {
     try {
-      const response = await fetch(`${API_URL}/reports/${id}/status`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (response.ok) {
-        alert("Status berhasil diperbarui!");
-        window.location.reload(); // Refresh halaman untuk melihat perubahan
-      }
-    } catch (error) {
-      console.error("Gagal update status:", error);
+      // Pakai service yang sudah ada, bukan fetch manual
+      await updateReportStatus(id, newStatus);
+      toast.success(`Status berhasil diubah ke "${newStatus}"!`);
+      onRefresh(); // callback ke parent untuk re-fetch data
+    } catch (error: any) {
+      toast.error(error.message || "Gagal update status");
     }
   };
 
@@ -49,10 +39,15 @@ export default function ReportsTable({ reports }: Props) {
               <td className="p-4 font-semibold">{report.item}</td>
               <td className="p-4">{report.location}</td>
               <td className="p-4">
-                <span className={`px-2 py-1 rounded-full text-xs font-bold ${report.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
-                  report.status === 'Found' ? 'bg-green-100 text-green-700' :
-                    'bg-blue-100 text-blue-700'
-                  }`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-bold ${
+                    report.status === "Pending"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : report.status === "Found"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-blue-100 text-blue-700"
+                  }`}
+                >
                   {report.status}
                 </span>
               </td>
@@ -60,16 +55,16 @@ export default function ReportsTable({ reports }: Props) {
                 <div className="flex gap-2">
                   {report.status === "Pending" && (
                     <button
-                      onClick={() => updateStatus(report.id, "Found")}
-                      className="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                      onClick={() => handleUpdateStatus(report.id, "Found")}
+                      className="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition-colors"
                     >
                       Mark Found
                     </button>
                   )}
                   {report.status === "Found" && (
                     <button
-                      onClick={() => updateStatus(report.id, "Claimed")}
-                      className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                      onClick={() => handleUpdateStatus(report.id, "Claimed")}
+                      className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors"
                     >
                       Mark Claimed
                     </button>
@@ -80,6 +75,10 @@ export default function ReportsTable({ reports }: Props) {
           ))}
         </tbody>
       </table>
+
+      {reports.length === 0 && (
+        <div className="p-10 text-center text-gray-400">Tidak ada data laporan.</div>
+      )}
     </div>
   );
 }
