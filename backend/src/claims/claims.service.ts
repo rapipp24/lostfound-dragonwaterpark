@@ -73,6 +73,9 @@ export class ClaimsService {
     return this.prisma.claim.update({
       where: { id },
       data: { status },
+      include: {
+        report: true,
+      },
     });
   }
 }
