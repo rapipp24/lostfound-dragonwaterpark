@@ -5,6 +5,7 @@ import { LoginDto } from './dto/login.dto';
 import { RolesGuard } from './roles.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtRefreshGuard } from './jwt-refresh.guard';
+import { Roles } from './roles.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -16,6 +17,8 @@ export class AuthController {
   }
 
   @Get('users')
+  @Roles('admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   getUsers() {
     return this.authService.getUsers();
   }
