@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'register_screen.dart';
 import '../services/auth_service.dart';
 import 'reports_screen.dart';
@@ -7,13 +9,18 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() =>
+      _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final emailController = TextEditingController();
+class _LoginScreenState
+    extends State<LoginScreen> {
 
-  final passwordController = TextEditingController();
+  final emailController =
+      TextEditingController();
+
+  final passwordController =
+      TextEditingController();
 
   bool isLoading = false;
 
@@ -22,7 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (emailController.text.isEmpty ||
         passwordController.text.isEmpty) {
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         const SnackBar(
           content: Text(
             "Email dan password tidak boleh kosong",
@@ -39,14 +47,24 @@ class _LoginScreenState extends State<LoginScreen> {
         isLoading = true;
       });
 
-      final result = await AuthService.login(
+      final result =
+          await AuthService.login(
         emailController.text,
         passwordController.text,
       );
 
+      final prefs =
+          await SharedPreferences.getInstance();
+
+      await prefs.setBool(
+        "isLoggedIn",
+        true,
+      );
+
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         SnackBar(
           content: Text(
             result["message"] ??
@@ -65,9 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     } catch (e) {
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         SnackBar(
           content: Text(
             e.toString(),
