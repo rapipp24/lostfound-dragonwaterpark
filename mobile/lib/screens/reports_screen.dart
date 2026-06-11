@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../services/report_service.dart';
+import 'login_screen.dart';
+import 'profile_screen.dart';
 import 'report_detail_screen.dart';
 
 class ReportsScreen extends StatefulWidget {
@@ -57,6 +59,40 @@ class _ReportsScreenState
         title: const Text(
           "Found Items",
         ),
+
+        actions: [
+
+          IconButton(
+            icon: const Icon(
+              Icons.person,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      const ProfileScreen(),
+                ),
+              );
+            },
+          ),
+
+          IconButton(
+            icon: const Icon(
+              Icons.logout,
+            ),
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      const LoginScreen(),
+                ),
+                (route) => false,
+              );
+            },
+          ),
+        ],
       ),
 
       body: loading
@@ -101,8 +137,8 @@ class _ReportsScreenState
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                        ReportDetailScreen(
-                          report: report,
+                              ReportDetailScreen(
+                            report: report,
                           ),
                         ),
                       );

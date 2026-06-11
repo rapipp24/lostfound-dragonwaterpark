@@ -25,6 +25,37 @@ class _RegisterScreenState
 
   Future<void> handleRegister() async {
 
+    if (fullNameController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        passwordController.text.isEmpty) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Semua field wajib diisi",
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    if (passwordController.text.length <
+        6) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Password minimal 6 karakter",
+          ),
+        ),
+      );
+
+      return;
+    }
+
     try {
 
       setState(() {
