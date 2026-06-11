@@ -35,12 +35,19 @@ export default function Input({
         required={required}
         disabled={disabled}
         className={`
-          w-full px-4 py-2.5 border border-gray-200 rounded-lg outline-none
-          focus:ring-2 focus:ring-blue-500 focus:border-transparent
-          text-gray-900 placeholder:text-gray-400
-          bg-white dark:bg-zinc-900
-          disabled:opacity-60 disabled:cursor-not-allowed
+          w-full px-4 py-3
+          border border-slate-300
+          rounded-xl
+          bg-white
+          text-slate-800
+          placeholder:text-slate-400
+          outline-none
           transition-all
+          focus: border-blue-500
+          focus: ring-2
+          focus: ring-blue-100
+          disabled:opacity-60
+          disabled:cursor-not-allowed
           ${className}
         `}
       />

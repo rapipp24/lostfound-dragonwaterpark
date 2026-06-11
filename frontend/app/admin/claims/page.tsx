@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { Claim } from "../types/claim";
@@ -27,8 +26,6 @@ const getErrorMessage = (error: unknown, fallback: string) => {
 };
 
 export default function Page() {
-  const router = useRouter();
-
   const [claims, setClaims] = useState<Claim[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +36,7 @@ export default function Page() {
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const claimsResponse = await getClaims();
       const claimsArray: ClaimApiResponse[] = claimsResponse.data ?? [];
@@ -61,11 +58,11 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleAddClaim = async () => {
     if (!claimerName || !claimerPhone || !selectedReportId) {
