@@ -7,7 +7,6 @@ import Container from "../../../../components/shared/Container";
 import AccessDenied from "../../../../components/shared/AccessDenied";
 import { PackagePlus, ArrowLeft, Save, MapPin, AlignLeft, ShieldAlert, Camera, X } from "lucide-react";
 import toast from "react-hot-toast";
-import Cookies from "js-cookie";
 import { createReport } from "../../../../services/report.service";
 
 export default function AddReportPage() {
@@ -47,27 +46,16 @@ export default function AddReportPage() {
     }
   };
 
-  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  // Derive access status to avoid set-state-in-effect warning
+  const hasAccess = authLoading || (isLogin && !user)
+    ? null
+    : !!(isLogin && user && user.role === "admin");
 
   useEffect(() => {
-    // Hanya proses jika status loading auth sudah selesai
-    if (!authLoading) {
-      if (!isLogin) {
-        // Belum login? Jelas tidak boleh masuk
-        setHasAccess(false);
-      } else if (user) {
-        // Sudah login dan data user sudah ada
-        if (user.role === "admin") {
-          setHasAccess(true);
-        } else {
-          setHasAccess(false);
-          toast.error("Akses Ditolak: Kamu bukan Admin!");
-        }
-      }
-      // Jika isLogin=true tapi data user belum muncul (null), 
-      // kita biarkan hasAccess tetap null supaya layar tetap loading.
+    if (!authLoading && isLogin && user && user.role !== "admin") {
+      toast.error("Akses Ditolak: Kamu bukan Admin!");
     }
-  }, [isLogin, user, authLoading]);
+  }, [authLoading, isLogin, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
