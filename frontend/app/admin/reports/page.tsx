@@ -12,12 +12,13 @@ export default function ReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
 
   const fetchReportsData = async () => {
     setLoading(true);
     try {
-      // Kirim search ke API — BE mendukung ?search=... untuk filter nama barang
-      const responseData = await getReports(undefined, search || undefined);
+      // Kirim search dan status ke API
+      const responseData = await getReports(status || undefined, search || undefined);
       const reportsArray = responseData.data || [];
 
       const mappedData = reportsArray.map((r: any) => ({
@@ -35,14 +36,14 @@ export default function ReportsPage() {
     }
   };
 
-  // Fetch ulang setiap kali search berubah (debounce sederhana via useEffect)
+  // Fetch ulang setiap kali search atau status berubah (debounce sederhana via useEffect)
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchReportsData();
     }, 400); // delay 400ms agar tidak spam request saat user mengetik
 
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, status]);
 
   return (
     <div>
@@ -54,12 +55,26 @@ export default function ReportsPage() {
         </Link>
       </div>
 
-      <div className="mb-4">
-        <Input
-          placeholder="Cari nama barang..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      <div className="mb-4 flex flex-col md:flex-row gap-4">
+        <div className="flex-1">
+          <Input
+            placeholder="Cari nama barang..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="w-full md:w-48">
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="w-full h-11 px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+          >
+            <option value="">Semua Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Found">Found</option>
+            <option value="Claimed">Claimed</option>
+          </select>
+        </div>
       </div>
 
       {loading ? (
