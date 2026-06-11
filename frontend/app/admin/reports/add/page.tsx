@@ -8,6 +8,7 @@ import AccessDenied from "../../../../components/shared/AccessDenied";
 import { PackagePlus, ArrowLeft, Save, MapPin, AlignLeft, ShieldAlert, Camera, X } from "lucide-react";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
+import { createReport } from "../../../../services/report.service";
 
 export default function AddReportPage() {
   const router = useRouter();
@@ -72,9 +73,6 @@ export default function AddReportPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const token = Cookies.get("access_token");
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
     try {
       const formData = new FormData();
       formData.append("item", item);
@@ -84,15 +82,7 @@ export default function AddReportPage() {
         formData.append("image", image);
       }
 
-      const response = await fetch(`${API_URL}/reports`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error("Gagal menyimpan laporan");
+      await createReport(formData);
 
       toast.success("Barang temuan berhasil dicatat!");
       router.push("/admin/reports");
