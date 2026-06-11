@@ -14,8 +14,9 @@ export default function ReportsTable({ reports, onRefresh }: Props) {
       await updateReportStatus(id, newStatus);
       toast.success(`Status berhasil diubah ke "${newStatus}"!`);
       onRefresh(); // callback ke parent untuk re-fetch data
-    } catch (error: any) {
-      toast.error(error.message || "Gagal update status");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Gagal update status";
+      toast.error(errorMessage);
     }
   };
 
@@ -25,8 +26,9 @@ export default function ReportsTable({ reports, onRefresh }: Props) {
         await deleteReport(id);
         toast.success("Laporan berhasil dihapus!");
         onRefresh();
-      } catch (error: any) {
-        toast.error(error.message || "Gagal menghapus laporan");
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Gagal menghapus laporan";
+        toast.error(errorMessage);
       }
     }
   };

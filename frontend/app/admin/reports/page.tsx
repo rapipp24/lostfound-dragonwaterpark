@@ -5,7 +5,7 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import { Report } from "../types/report";
 import ReportsTable from "../components/ReportsTable";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getReports } from "../../../services/report.service";
 
 export default function ReportsPage() {
@@ -14,14 +14,14 @@ export default function ReportsPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
 
-  const fetchReportsData = async () => {
+  const fetchReportsData = useCallback(async () => {
     setLoading(true);
     try {
       // Kirim search dan status ke API
       const responseData = await getReports(status || undefined, search || undefined);
       const reportsArray = responseData.data || [];
 
-      const mappedData = reportsArray.map((r: any) => ({
+      const mappedData = reportsArray.map((r: { id: number; item: string; location: string; status: string }) => ({
         id: r.id,
         item: r.item,
         location: r.location,
@@ -34,7 +34,7 @@ export default function ReportsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [status, search]);
 
   // Fetch ulang setiap kali search atau status berubah (debounce sederhana via useEffect)
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function ReportsPage() {
     }, 400); // delay 400ms agar tidak spam request saat user mengetik
 
     return () => clearTimeout(timer);
-  }, [search, status]);
+  }, [fetchReportsData]);
 
   return (
     <div>
