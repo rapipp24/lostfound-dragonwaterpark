@@ -1,5 +1,5 @@
 import { Report } from "../types/report";
-import { updateReportStatus } from "../../../services/report.service";
+import { updateReportStatus, deleteReport } from "../../../services/report.service";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -14,10 +14,25 @@ export default function ReportsTable({ reports, onRefresh }: Props) {
       await updateReportStatus(id, newStatus);
       toast.success(`Status berhasil diubah ke "${newStatus}"!`);
       onRefresh(); // callback ke parent untuk re-fetch data
-    } catch (error: any) {
-      toast.error(error.message || "Gagal update status");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Gagal update status";
+      toast.error(errorMessage);
     }
   };
+
+  const handleDelete = async (id: number) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus laporan ini?")) {
+      try {
+        await deleteReport(id);
+        toast.success("Laporan berhasil dihapus!");
+        onRefresh();
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Gagal menghapus laporan";
+        toast.error(errorMessage);
+      }
+    }
+  };
+
 
   return (
     <div className="bg-white text-gray-800 rounded-lg shadow overflow-hidden">
@@ -68,6 +83,12 @@ export default function ReportsTable({ reports, onRefresh }: Props) {
                       Mark Claimed
                     </button>
                   )}
+                  <button
+                    onClick={() => handleDelete(report.id)}
+                    className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors"
+                  >
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
