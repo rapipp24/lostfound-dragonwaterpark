@@ -102,50 +102,58 @@ class _ReportsScreenState
                   CircularProgressIndicator(),
             )
 
-          : ListView.builder(
-              padding:
-                  const EdgeInsets.all(16),
+          : RefreshIndicator(
+              onRefresh:
+                  fetchReports,
 
-              itemCount:
-                  reports.length,
+              child:
+                  ListView.builder(
+                padding:
+                    const EdgeInsets.all(
+                  16,
+                ),
 
-              itemBuilder:
-                  (context, index) {
+                itemCount:
+                    reports.length,
 
-                final report =
-                    reports[index];
+                itemBuilder:
+                    (context, index) {
 
-                return Card(
-                  child: ListTile(
-                    leading:
-                        const Icon(
-                      Icons.inventory,
-                    ),
+                  final report =
+                      reports[index];
 
-                    title: Text(
-                      report["item"] ??
-                          "-",
-                    ),
+                  return Card(
+                    child: ListTile(
+                      leading:
+                          const Icon(
+                        Icons.inventory,
+                      ),
 
-                    subtitle: Text(
-                      report["location"] ??
-                          "-",
-                    ),
+                      title: Text(
+                        report["item"] ??
+                            "-",
+                      ),
 
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              ReportDetailScreen(
-                            report: report,
+                      subtitle: Text(
+                        report["location"] ??
+                            "-",
+                      ),
+
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ReportDetailScreen(
+                              report: report,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
     );
   }
