@@ -18,6 +18,11 @@ class _ReportsScreenState
 
   List<dynamic> reports = [];
 
+  List<dynamic> filteredReports = [];
+
+  final searchController =
+      TextEditingController();
+
   bool loading = true;
 
   @override
@@ -35,6 +40,7 @@ class _ReportsScreenState
 
       setState(() {
         reports = data;
+        filteredReports = data;
       });
 
     } catch (e) {
@@ -49,6 +55,28 @@ class _ReportsScreenState
         loading = false;
       });
     }
+  }
+
+  void searchReport(
+    String value,
+  ) {
+
+    setState(() {
+
+      filteredReports =
+          reports.where((report) {
+
+        final item =
+            report["item"]
+                .toString()
+                .toLowerCase();
+
+        return item.contains(
+          value.toLowerCase(),
+        );
+
+      }).toList();
+    });
   }
 
   @override
@@ -136,53 +164,93 @@ class _ReportsScreenState
                   onRefresh:
                       fetchReports,
 
-                  child:
-                      ListView.builder(
-                    padding:
-                        const EdgeInsets.all(
-                      16,
-                    ),
+                  child: Column(
+                    children: [
 
-                    itemCount:
-                        reports.length,
+                      Padding(
+                        padding:
+                            const EdgeInsets.all(
+                          16,
+                        ),
 
-                    itemBuilder:
-                        (context, index) {
+                        child: TextField(
+                          controller:
+                              searchController,
 
-                      final report =
-                          reports[index];
+                          onChanged:
+                              searchReport,
 
-                      return Card(
-                        child: ListTile(
-                          leading:
-                              const Icon(
-                            Icons.inventory,
+                          decoration:
+                              const InputDecoration(
+                            hintText:
+                                "Cari barang...",
+                            prefixIcon:
+                                Icon(
+                              Icons.search,
+                            ),
+                            border:
+                                OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+
+                      Expanded(
+                        child:
+                            ListView.builder(
+                          padding:
+                              const EdgeInsets.symmetric(
+                            horizontal: 16,
                           ),
 
-                          title: Text(
-                            report["item"] ??
-                                "-",
-                          ),
+                          itemCount:
+                              filteredReports.length,
 
-                          subtitle: Text(
-                            report["location"] ??
-                                "-",
-                          ),
+                          itemBuilder:
+                              (
+                            context,
+                            index,
+                          ) {
 
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    ReportDetailScreen(
-                                  report: report,
+                            final report =
+                                filteredReports[
+                                    index];
+
+                            return Card(
+                              child:
+                                  ListTile(
+                                leading:
+                                    const Icon(
+                                  Icons.inventory,
                                 ),
+
+                                title: Text(
+                                  report["item"] ??
+                                      "-",
+                                ),
+
+                                subtitle: Text(
+                                  report["location"] ??
+                                      "-",
+                                ),
+
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          ReportDetailScreen(
+                                        report:
+                                            report,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             );
                           },
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
                 ),
     );
