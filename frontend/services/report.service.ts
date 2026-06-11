@@ -77,3 +77,13 @@ export const updateReportStatus = async (id: number, status: string) => {
   if (!response.ok) throw new Error("Gagal memperbarui status");
   return response.json();
 };
+
+export const deleteReport = async (id: number | string) => {
+  const response = await fetch(`${BASE_URL}/reports/${id}`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
+  if (!response.ok) throw new Error("Gagal menghapus laporan");
+  return response.json();
+};
+
