@@ -1,5 +1,5 @@
 import { Report } from "../types/report";
-import { updateReportStatus } from "../../../services/report.service";
+import { updateReportStatus, deleteReport } from "../../../services/report.service";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -18,6 +18,19 @@ export default function ReportsTable({ reports, onRefresh }: Props) {
       toast.error(error.message || "Gagal update status");
     }
   };
+
+  const handleDelete = async (id: number) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus laporan ini?")) {
+      try {
+        await deleteReport(id);
+        toast.success("Laporan berhasil dihapus!");
+        onRefresh();
+      } catch (error: any) {
+        toast.error(error.message || "Gagal menghapus laporan");
+      }
+    }
+  };
+
 
   return (
     <div className="bg-white text-gray-800 rounded-lg shadow overflow-hidden">
@@ -68,6 +81,12 @@ export default function ReportsTable({ reports, onRefresh }: Props) {
                       Mark Claimed
                     </button>
                   )}
+                  <button
+                    onClick={() => handleDelete(report.id)}
+                    className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors"
+                  >
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
