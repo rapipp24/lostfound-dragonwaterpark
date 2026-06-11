@@ -30,4 +30,31 @@ class AuthService {
       response.body,
     );
   }
+
+  static Future<dynamic> register(
+    String fullName,
+    String email,
+    String password,
+  ) async {
+
+    final response =
+        await http.post(
+      Uri.parse(
+        "$baseUrl/auth/register",
+      ),
+      headers: {
+        "Content-Type":
+            "application/json",
+      },
+      body: jsonEncode({
+        "fullName": fullName,
+        "email": email,
+        "password": password,
+      }),
+    );
+
+    return jsonDecode(
+      response.body,
+    );
+  }
 }
