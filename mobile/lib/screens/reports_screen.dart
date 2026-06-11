@@ -102,59 +102,89 @@ class _ReportsScreenState
                   CircularProgressIndicator(),
             )
 
-          : RefreshIndicator(
-              onRefresh:
-                  fetchReports,
+          : reports.isEmpty
 
-              child:
-                  ListView.builder(
-                padding:
-                    const EdgeInsets.all(
-                  16,
-                ),
+              ? const Center(
+                  child: Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.center,
 
-                itemCount:
-                    reports.length,
+                    children: [
 
-                itemBuilder:
-                    (context, index) {
-
-                  final report =
-                      reports[index];
-
-                  return Card(
-                    child: ListTile(
-                      leading:
-                          const Icon(
-                        Icons.inventory,
+                      Icon(
+                        Icons.inventory_2_outlined,
+                        size: 80,
+                        color: Colors.grey,
                       ),
 
-                      title: Text(
-                        report["item"] ??
-                            "-",
+                      SizedBox(
+                        height: 16,
                       ),
 
-                      subtitle: Text(
-                        report["location"] ??
-                            "-",
+                      Text(
+                        "Belum ada barang ditemukan",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey,
+                        ),
                       ),
+                    ],
+                  ),
+                )
 
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ReportDetailScreen(
-                              report: report,
-                            ),
-                          ),
-                        );
-                      },
+              : RefreshIndicator(
+                  onRefresh:
+                      fetchReports,
+
+                  child:
+                      ListView.builder(
+                    padding:
+                        const EdgeInsets.all(
+                      16,
                     ),
-                  );
-                },
-              ),
-            ),
+
+                    itemCount:
+                        reports.length,
+
+                    itemBuilder:
+                        (context, index) {
+
+                      final report =
+                          reports[index];
+
+                      return Card(
+                        child: ListTile(
+                          leading:
+                              const Icon(
+                            Icons.inventory,
+                          ),
+
+                          title: Text(
+                            report["item"] ??
+                                "-",
+                          ),
+
+                          subtitle: Text(
+                            report["location"] ??
+                                "-",
+                          ),
+
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ReportDetailScreen(
+                                  report: report,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
     );
   }
 }
