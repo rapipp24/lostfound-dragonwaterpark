@@ -35,9 +35,9 @@ export default function ReportsTable({ reports, onRefresh }: Props) {
 
 
   return (
-    <div className="bg-white text-gray-800 rounded-lg shadow overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       <table className="w-full">
-        <thead className="bg-gray-100">
+        <thead className="bg-slate-50">
           <tr>
             <th className="text-left p-4">ID</th>
             <th className="text-left p-4">Item</th>
@@ -49,17 +49,17 @@ export default function ReportsTable({ reports, onRefresh }: Props) {
 
         <tbody>
           {reports.map((report) => (
-            <tr key={report.id} className="border-t hover:bg-gray-50">
+            <tr key={report.id} className="border-t border-slate-200 hover:bg-slate-50">
               <td className="p-4">{report.id}</td>
               <td className="p-4 font-semibold">{report.item}</td>
               <td className="p-4">{report.location}</td>
               <td className="p-4">
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-bold ${report.status === "Pending"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : report.status === "Found"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-blue-100 text-blue-700"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : report.status === "Found"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-blue-100 text-blue-700"
                     }`}
                 >
                   {report.status}
@@ -97,7 +97,7 @@ export default function ReportsTable({ reports, onRefresh }: Props) {
       </table>
 
       {reports.length === 0 && (
-        <div className="p-10 text-center text-gray-400">Tidak ada data laporan.</div>
+        <div className="p-10 text-center text-slate-500">Tidak ada data laporan.</div>
       )}
     </div>
   );
