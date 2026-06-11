@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
+import Input from "../components/Input";
+import Button from "../components/Button";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 
@@ -17,9 +17,7 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
 
-
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-    console.log("API_URL LOGIN:", API_URL);
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",

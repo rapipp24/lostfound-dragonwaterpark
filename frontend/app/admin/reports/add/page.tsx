@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../../../hooks/useAuth";
 import Container from "../../../../components/shared/Container";
 import AccessDenied from "../../../../components/shared/AccessDenied";
-import { PackagePlus, ArrowLeft, Save, MapPin, AlignLeft, ShieldAlert } from "lucide-react";
+import { PackagePlus, ArrowLeft, Save, MapPin, AlignLeft, ShieldAlert, Camera, X } from "lucide-react";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 
@@ -16,7 +16,35 @@ export default function AddReportPage() {
   const [item, setItem] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Ukuran file terlalu besar (Maks 5MB)");
+        return;
+      }
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
 
@@ -52,6 +80,9 @@ export default function AddReportPage() {
       formData.append("item", item);
       formData.append("location", location);
       formData.append("description", description);
+      if (image) {
+        formData.append("image", image);
+      }
 
       const response = await fetch(`${API_URL}/reports`, {
         method: "POST",
@@ -159,6 +190,53 @@ export default function AddReportPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   required
                 ></textarea>
+              </div>
+
+              <div className="space-y-3">
+                <label className="flex items-center gap-2 text-sm font-black text-gray-700 uppercase tracking-wider">
+                  <Camera size={16} className="text-blue-600" />
+                  Foto Barang Temuan (Opsional)
+                </label>
+                
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full border-2 border-dashed border-gray-200 rounded-2xl p-8 hover:bg-gray-50/50 hover:border-blue-400 transition-all flex flex-col items-center justify-center gap-2 group cursor-pointer"
+                >
+                  <Camera className="text-gray-400 group-hover:text-blue-600 transition-colors" size={28} />
+                  <span className="text-xs font-bold text-gray-500 group-hover:text-blue-600 transition-colors">
+                    Klik untuk memilih atau mengambil foto
+                  </span>
+                  <span className="text-[10px] text-gray-400">
+                    Format JPG, JPEG, atau PNG (Maks 5MB)
+                  </span>
+                </button>
+
+                {imagePreview && (
+                  <div className="relative mt-4 border border-gray-100 rounded-2xl overflow-hidden shadow-md group max-w-sm">
+                    <img
+                      src={imagePreview}
+                      alt="Pratinjau Foto"
+                      className="w-full h-48 object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full transition-all hover:scale-110 active:scale-95 shadow-lg flex items-center justify-center"
+                      title="Hapus Foto"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 

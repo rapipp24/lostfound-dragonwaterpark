@@ -40,13 +40,12 @@ export default function ReportsTable({ reports, onRefresh }: Props) {
               <td className="p-4">{report.location}</td>
               <td className="p-4">
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-bold ${
-                    report.status === "Pending"
+                  className={`px-2 py-1 rounded-full text-xs font-bold ${report.status === "Pending"
                       ? "bg-yellow-100 text-yellow-700"
                       : report.status === "Found"
                         ? "bg-green-100 text-green-700"
                         : "bg-blue-100 text-blue-700"
-                  }`}
+                    }`}
                 >
                   {report.status}
                 </span>

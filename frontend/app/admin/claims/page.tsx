@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { Claim } from "../types/claim";
@@ -28,7 +27,6 @@ const getErrorMessage = (error: unknown, fallback: string) => {
 };
 
 export default function Page() {
-  const { user, isLogin, loading: authLoading } = useAuth();
   const router = useRouter();
 
   const [claims, setClaims] = useState<Claim[]>([]);
@@ -66,18 +64,8 @@ export default function Page() {
   };
 
   useEffect(() => {
-    const loadData = async () => {
-      if (!authLoading) {
-        if (!isLogin || user?.role !== "admin") {
-          router.push("/admin/login");
-        } else {
-          await fetchData();
-        }
-      }
-    };
-
-    loadData();
-  }, [isLogin, authLoading, user, router]);
+    fetchData();
+  }, []);
 
   const handleAddClaim = async () => {
     if (!claimerName || !claimerPhone || !selectedReportId) {
@@ -121,15 +109,13 @@ export default function Page() {
     claim.status.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (authLoading || (isLogin && user?.role === "admin" && loading)) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
       </div>
     );
   }
-
-  if (!isLogin || user?.role !== "admin") return null;
 
   return (
     <div>

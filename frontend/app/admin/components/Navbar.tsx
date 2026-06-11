@@ -1,10 +1,45 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Bell, User, LogOut } from "lucide-react";
 import Cookies from "js-cookie";
 
 export default function Navbar() {
-  const handleLogout = () => {
+  const [adminName, setAdminName] = useState("System Admin");
+  const [initial, setInitial] = useState("A");
+
+  useEffect(() => {
+    const userStr = Cookies.get("user");
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        if (user.fullName) {
+          setAdminName(user.fullName);
+          setInitial(user.fullName.charAt(0).toUpperCase());
+        }
+      } catch (err) {
+        console.error("Gagal parse cookie user:", err);
+      }
+    }
+  }, []);
+  const handleLogout = async () => {
+    const token = Cookies.get("access_token");
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+    if (token) {
+      try {
+        await fetch(`${API_URL}/auth/logout`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+      } catch (err) {
+        console.error("Gagal logout di backend:", err);
+      }
+    }
+
     Cookies.remove("access_token");
     Cookies.remove("user");
 
@@ -37,11 +72,11 @@ export default function Navbar() {
         {/* Admin Profile & Logout */}
         <div className="flex items-center gap-4">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-bold text-gray-900 leading-none">System Admin</p>
+            <p className="text-sm font-bold text-gray-900 leading-none">{adminName}</p>
             <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Superuser</p>
           </div>
           <div className="w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center font-bold shadow-lg shadow-gray-200">
-            A
+            {initial}
           </div>
           <button
             onClick={handleLogout}
