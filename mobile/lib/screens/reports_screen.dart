@@ -101,7 +101,9 @@ class _ReportsScreenState
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              const ReportDetailScreen(),
+                        ReportDetailScreen(
+                          report: report,
+                          ),
                         ),
                       );
                     },

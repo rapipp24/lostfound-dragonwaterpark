@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'claim_history_screen.dart';
 
 class ReportDetailScreen extends StatelessWidget {
-  const ReportDetailScreen({super.key});
+  final Map<String, dynamic> report;
+
+  const ReportDetailScreen({
+    super.key,
+    required this.report,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,14 +18,16 @@ class ReportDetailScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
           children: [
             Container(
               height: 220,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius:
+                    BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.image,
@@ -30,30 +37,31 @@ class ReportDetailScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            const Text(
-              "Dompet Hitam",
-              style: TextStyle(
+            Text(
+              report["item"] ?? "-",
+              style: const TextStyle(
                 fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontWeight:
+                    FontWeight.bold,
               ),
             ),
 
             const SizedBox(height: 10),
 
-            const Text(
-              "Lokasi: Area Kolam Utama",
+            Text(
+              "Lokasi: ${report["location"] ?? "-"}",
             ),
 
             const SizedBox(height: 10),
 
-            const Text(
-              "Status: Found",
+            Text(
+              "Status: ${report["status"] ?? "-"}",
             ),
 
             const SizedBox(height: 20),
 
-            const Text(
-              "Deskripsi barang temuan akan tampil di sini.",
+            Text(
+              report["description"] ?? "-",
             ),
 
             const SizedBox(height: 30),

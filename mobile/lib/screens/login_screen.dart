@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
 import '../services/auth_service.dart';
+import 'reports_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,8 +31,19 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result["message"] ?? "Login berhasil")),
-      );
+  SnackBar(
+    content: Text(
+      result["message"] ?? "Login berhasil",
+    ),
+  ),
+);
+
+Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(
+    builder: (_) => const ReportsScreen(),
+  ),
+);
     } catch (e) {
       ScaffoldMessenger.of(
         context,
