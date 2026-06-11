@@ -73,11 +73,21 @@ export default function AddReportPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const trimmedItem = item.trim();
+    const trimmedLocation = location.trim();
+    const trimmedDescription = description.trim();
+
+    if (!trimmedItem || !trimmedLocation || !trimmedDescription) {
+      toast.error("Nama barang, lokasi, dan deskripsi tidak boleh hanya berupa spasi kosong!");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const formData = new FormData();
-      formData.append("item", item);
-      formData.append("location", location);
-      formData.append("description", description);
+      formData.append("item", trimmedItem);
+      formData.append("location", trimmedLocation);
+      formData.append("description", trimmedDescription);
       if (image) {
         formData.append("image", image);
       }
@@ -86,8 +96,9 @@ export default function AddReportPage() {
 
       toast.success("Barang temuan berhasil dicatat!");
       router.push("/admin/reports");
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Gagal menyimpan laporan";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
