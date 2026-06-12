@@ -9,6 +9,7 @@ export interface UserResponse {
 export interface AuthResponse {
   message: string;
   access_token: string;
+  refresh_token: string;
   user: UserResponse;
 }
 
