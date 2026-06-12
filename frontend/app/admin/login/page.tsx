@@ -49,13 +49,13 @@ export default function AdminLoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-900 px-4">
-      <div className="w-full max-w-md p-10 space-y-8 bg-white rounded-[2rem] shadow-2xl">
+      <div className="w-full max-w-md p-10 space-y-8 bg-blue-50 border border-blue-100 rounded-[2rem] shadow-xl shadow-blue-950/10">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-2xl bg-slate-900 text-white text-3xl font-bold">
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-2xl bg-blue-600 text-white text-3xl font-bold">
             LF
           </div>
-          <h2 className="text-3xl font-black text-slate-900">Admin Panel</h2>
-          <p className="text-slate-500 mt-2">Dragon Waterpark Management System</p>
+          <h2 className="text-3xl font-black text-blue-900">Admin Panel</h2>
+          <p className="text-blue-700 mt-2">Dragon Waterpark Management System</p>
         </div>
 
         <form className="space-y-6" onSubmit={handleLogin}>
@@ -79,15 +79,15 @@ export default function AdminLoginPage() {
 
           <Button
             type="submit"
-            className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white shadow-xl shadow-slate-200"
+            className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200"
             disabled={loading}
           >
             {loading ? "Authenticating..." : "Authorize Login"}
           </Button>
         </form>
 
-        <div className="pt-6 border-t border-slate-100 text-center">
-          <p className="text-xs text-slate-400 uppercase tracking-widest">
+        <div className="pt-6 border-t border-blue-100 text-center">
+          <p className="text-xs text-blue-400 uppercase tracking-widest">
             Restricted Area • Authorized Access Only
           </p>
         </div>
