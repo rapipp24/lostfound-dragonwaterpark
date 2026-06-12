@@ -4,7 +4,17 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('--- Memulai Injeksi Data Laporan ---');
 
-  const userId = 6; // ID Joni
+  // Cari user admin dan user biasa secara dinamis dari DB untuk menghindari FK constraint error
+  const adminUser = await prisma.user.findFirst({ where: { role: 'admin' } });
+  const regularUser = await prisma.user.findFirst({ where: { role: 'user' } });
+
+  if (!adminUser || !regularUser) {
+    console.error('ERROR: Database harus memiliki minimal 1 admin dan 1 user biasa sebelum seeding laporan!');
+    return;
+  }
+
+  const adminId = adminUser.id;
+  const userId = regularUser.id;
 
   const reports = [
     {
@@ -29,7 +39,7 @@ async function main() {
       description: 'Frame emas, lensa hijau botol. Tertinggal di meja nomor 12.',
       status: 'Found',
       image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=500',
-      userId: 1 // Ditemukan admin
+      userId: adminId // Ditemukan admin
     },
     {
       item: 'Kunci Mobil BMW',
@@ -37,7 +47,7 @@ async function main() {
       description: 'Gantungan kunci logo M-Performance, ada tombol yang agak lecet.',
       status: 'Found',
       image: 'https://images.unsplash.com/photo-1551522435-a13afa10f103?q=80&w=500',
-      userId: 1
+      userId: adminId
     },
     {
       item: 'Boneka Teddy Bear Kecil',
@@ -53,7 +63,7 @@ async function main() {
       description: 'Warna hitam doff, seri GA-2100. Lepas saat meluncur.',
       status: 'Found',
       image: 'https://images.unsplash.com/photo-1548171916-c0ea7fbc3bc5?q=80&w=500',
-      userId: 1
+      userId: adminId
     },
     {
       item: 'Topi NY Yankees',
