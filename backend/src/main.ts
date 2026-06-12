@@ -3,8 +3,14 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
 import { join } from 'path';
+import * as fs from 'fs';
 
 async function bootstrap() {
+  // Pastikan folder uploads tersedia agar Multer tidak crash
+  if (!fs.existsSync('./uploads')) {
+    fs.mkdirSync('./uploads', { recursive: true });
+  }
+
   const app = await NestFactory.create(AppModule);
 
   // Aktifkan validasi global
