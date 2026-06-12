@@ -41,6 +41,56 @@ class _ProfileScreenState
 
   Future<void> logout() async {
 
+    final confirm =
+        await showDialog<bool>(
+      context: context,
+
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Logout",
+          ),
+
+          content: const Text(
+            "Apakah Anda yakin ingin logout?",
+          ),
+
+          actions: [
+
+            TextButton(
+              onPressed: () {
+                Navigator.pop(
+                  context,
+                  false,
+                );
+              },
+
+              child: const Text(
+                "Batal",
+              ),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(
+                  context,
+                  true,
+                );
+              },
+
+              child: const Text(
+                "Logout",
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm != true) {
+      return;
+    }
+
     final prefs =
         await SharedPreferences.getInstance();
 
