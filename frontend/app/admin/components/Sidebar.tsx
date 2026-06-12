@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, FileText, CheckSquare } from "lucide-react";
+import { LayoutDashboard, FileText, CheckSquare, Users } from "lucide-react";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/reports", label: "Reports", icon: FileText },
   { href: "/admin/claims", label: "Claims", icon: CheckSquare },
+  { href: "/admin/users", label: "Users", icon: Users },
 ];
 
 export default function Sidebar() {
