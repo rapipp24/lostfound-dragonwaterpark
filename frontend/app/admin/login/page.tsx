@@ -36,6 +36,9 @@ export default function AdminLoginPage() {
 
       // Simpan Data
       Cookies.set("access_token", data.access_token);
+      if (data.refresh_token) {
+        Cookies.set("refresh_token", data.refresh_token);
+      }
       Cookies.set("user", JSON.stringify(data.user));
 
       toast.success("Selamat datang, Admin!");
