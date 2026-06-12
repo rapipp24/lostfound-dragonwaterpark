@@ -1,59 +1,32 @@
-import { getCookie, removeCookie } from "../utils/cookies";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
-const getHeaders = () => {
-  const token = getCookie("access_token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
+import { fetchWithAuth } from "../utils/api";
 
 export const getClaims = async () => {
-  const response = await fetch(`${BASE_URL}/claims`, {
-    headers: getHeaders(),
-  });
-
-  if (response.status === 401) {
-    removeCookie("access_token");
-    removeCookie("user");
-    throw new Error("Sesi Anda berakhir. Silakan login kembali.");
-  }
-
+  const response = await fetchWithAuth("/claims");
   if (!response.ok) throw new Error("Gagal mengambil daftar klaim");
   return response.json();
 };
 
 export const createClaim = async (data: { claimerName: string; claimerPhone: string; reportId: number }) => {
-  const response = await fetch(`${BASE_URL}/claims`, {
+  const response = await fetchWithAuth("/claims", {
     method: "POST",
-    headers: getHeaders(),
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
-
-  if (response.status === 401) {
-    removeCookie("access_token");
-    removeCookie("user");
-    throw new Error("Sesi berakhir. Silakan login kembali.");
-  }
 
   if (!response.ok) throw new Error("Gagal mendaftarkan klaim");
   return response.json();
 };
 
 export const updateClaimStatus = async (id: number, status: string) => {
-  const response = await fetch(`${BASE_URL}/claims/${id}/status`, {
+  const response = await fetchWithAuth(`/claims/${id}/status`, {
     method: "PATCH",
-    headers: getHeaders(),
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ status }),
   });
-
-  if (response.status === 401) {
-    removeCookie("access_token");
-    removeCookie("user");
-    throw new Error("Sesi berakhir. Silakan login kembali.");
-  }
 
   if (!response.ok) throw new Error("Gagal memperbarui status klaim");
   return response.json();

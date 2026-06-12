@@ -1,28 +1,9 @@
-import { getCookie, removeCookie } from "../utils/cookies";
+import { fetchWithAuth } from "../utils/api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-const getHeaders = () => {
-  const token = getCookie("access_token");
-  return {
-    Authorization: `Bearer ${token}`,
-  };
-};
-
 export const getMyReports = async () => {
-  const response = await fetch(`${BASE_URL}/reports/me`, {
-    headers: {
-      ...getHeaders(),
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (response.status === 401) {
-    removeCookie("access_token");
-    removeCookie("user");
-    throw new Error("Sesi Anda berakhir. Silakan login kembali.");
-  }
-
+  const response = await fetchWithAuth("/reports/me");
   if (!response.ok) throw new Error("Gagal mengambil laporan Anda");
   return response.json();
 };
@@ -46,17 +27,10 @@ export const getReportById = async (id: string | number) => {
 export const createReport = async (formData: FormData) => {
   // Catatan: Jangan tambahkan "Content-Type" manual saat mengirim FormData, 
   // Biarkan browser yang menentukannya secara otomatis termasuk boundary-nya.
-  const response = await fetch(`${BASE_URL}/reports`, {
+  const response = await fetchWithAuth("/reports", {
     method: "POST",
-    headers: getHeaders(),
     body: formData,
   });
-
-  if (response.status === 401) {
-    removeCookie("access_token");
-    removeCookie("user");
-    throw new Error("Sesi berakhir. Silakan login kembali.");
-  }
 
   if (!response.ok) {
     const err = await response.json();
@@ -66,10 +40,9 @@ export const createReport = async (formData: FormData) => {
 };
 
 export const updateReportStatus = async (id: number, status: string) => {
-  const response = await fetch(`${BASE_URL}/reports/${id}/status`, {
+  const response = await fetchWithAuth(`/reports/${id}/status`, {
     method: "PATCH",
     headers: {
-      ...getHeaders(),
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ status }),
@@ -79,11 +52,9 @@ export const updateReportStatus = async (id: number, status: string) => {
 };
 
 export const deleteReport = async (id: number | string) => {
-  const response = await fetch(`${BASE_URL}/reports/${id}`, {
+  const response = await fetchWithAuth(`/reports/${id}`, {
     method: "DELETE",
-    headers: getHeaders(),
   });
   if (!response.ok) throw new Error("Gagal menghapus laporan");
   return response.json();
 };
-
