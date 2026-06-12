@@ -1,8 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'login_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() =>
+      _ProfileScreenState();
+}
+
+class _ProfileScreenState
+    extends State<ProfileScreen> {
+
+  String name = "-";
+  String email = "-";
+
+  @override
+  void initState() {
+    super.initState();
+    loadProfile();
+  }
+
+  Future<void> loadProfile() async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    setState(() {
+      name =
+          prefs.getString("name") ??
+              "-";
+
+      email =
+          prefs.getString("email") ??
+              "-";
+    });
+  }
+
+  Future<void> logout() async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    await prefs.remove(
+      "isLoggedIn",
+    );
+
+    await prefs.remove(
+      "name",
+    );
+
+    await prefs.remove(
+      "email",
+    );
+
+    if (!mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            const LoginScreen(),
+      ),
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +95,12 @@ class ProfileScreen extends StatelessWidget {
               height: 20,
             ),
 
-            const Text(
-              "Nama Pengguna",
-              style: TextStyle(
+            Text(
+              name,
+              style: const TextStyle(
                 fontSize: 22,
-                fontWeight: FontWeight.bold,
+                fontWeight:
+                    FontWeight.bold,
               ),
             ),
 
@@ -43,8 +108,8 @@ class ProfileScreen extends StatelessWidget {
               height: 8,
             ),
 
-            const Text(
-              "user@email.com",
+            Text(
+              email,
             ),
 
             const SizedBox(
@@ -67,20 +132,12 @@ class ProfileScreen extends StatelessWidget {
                 icon: const Icon(
                   Icons.logout,
                 ),
+
                 label: const Text(
                   "LOGOUT",
                 ),
 
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          const LoginScreen(),
-                    ),
-                    (route) => false,
-                  );
-                },
+                onPressed: logout,
               ),
             ),
           ],

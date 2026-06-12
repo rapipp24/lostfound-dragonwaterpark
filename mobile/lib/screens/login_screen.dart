@@ -61,6 +61,18 @@ class _LoginScreenState
         true,
       );
 
+      await prefs.setString(
+  "email",
+  emailController.text,
+);
+
+await prefs.setString(
+  "name",
+  emailController.text
+      .split("@")
+      .first,
+);
+
       if (!mounted) return;
 
       ScaffoldMessenger.of(context)

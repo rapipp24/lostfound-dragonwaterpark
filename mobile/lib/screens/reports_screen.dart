@@ -38,6 +38,10 @@ class _ReportsScreenState
       final data =
           await ReportService.getReports();
 
+      debugPrint(
+          data.toString(),
+      );
+
       setState(() {
         reports = data;
         filteredReports = data;
