@@ -128,6 +128,7 @@ class _CreateReportScreenState
         item,
         location,
         description,
+        selectedImage,
       );
 
       if (!mounted) return;

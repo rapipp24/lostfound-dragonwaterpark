@@ -1,97 +1,79 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 class ReportService {
+  static String get baseUrl => dotenv.env['BASE_URL']!;
 
-  static String get baseUrl =>
-      dotenv.env['BASE_URL']!;
+  static Future<List<dynamic>> getReports() async {
+    final response = await http.get(Uri.parse("$baseUrl/reports"));
 
-  static Future<List<dynamic>>
-      getReports() async {
-
-    final response =
-        await http.get(
-      Uri.parse(
-        "$baseUrl/reports",
-      ),
-    );
-
-    if (response.statusCode !=
-        200) {
-      throw Exception(
-        "Gagal mengambil laporan",
-      );
+    if (response.statusCode != 200) {
+      throw Exception("Gagal mengambil laporan");
     }
 
-    final result =
-        jsonDecode(
-      response.body,
-    );
+    final result = jsonDecode(response.body);
 
     return result["data"];
   }
 
-  static Future<List<dynamic>>
-      getMyReports() async {
+  static Future<List<dynamic>> getMyReports() async {
+    final prefs = await SharedPreferences.getInstance();
 
-    final response =
-        await http.get(
-      Uri.parse(
-        "$baseUrl/reports/me",
-      ),
+    final token = prefs.getString("token");
+
+    final response = await http.get(
+      Uri.parse("$baseUrl/reports/me"),
+      headers: {"Authorization": "Bearer $token"},
     );
 
-    if (response.statusCode !=
-        200) {
-      throw Exception(
-        "Gagal mengambil laporan saya",
-      );
+    if (response.statusCode != 200) {
+      throw Exception("Gagal mengambil laporan saya");
     }
 
-    final result =
-        jsonDecode(
-      response.body,
-    );
+    final result = jsonDecode(response.body);
 
     return result["data"];
   }
 
-  static Future<dynamic>
-      createReport(
+  static Future<dynamic> createReport(
     String item,
     String location,
     String description,
+    File? image,
   ) async {
+    final prefs = await SharedPreferences.getInstance();
 
-    final response =
-        await http.post(
-      Uri.parse(
-        "$baseUrl/reports",
-      ),
-      headers: {
-        "Content-Type":
-            "application/json",
-      },
-      body: jsonEncode({
-        "item": item,
-        "location": location,
-        "description":
-            description,
-      }),
+    final token = prefs.getString("token");
+
+    final request = http.MultipartRequest(
+      "POST",
+      Uri.parse("$baseUrl/reports"),
     );
 
-    if (response.statusCode !=
-            201 &&
-        response.statusCode !=
-            200) {
-      throw Exception(
-        "Gagal membuat laporan",
-      );
+    request.headers.addAll({"Authorization": "Bearer $token"});
+
+    request.fields["item"] = item;
+
+    request.fields["location"] = location;
+
+    request.fields["description"] = description;
+
+    if (image != null) {
+      request.files.add(await http.MultipartFile.fromPath("image", image.path));
     }
 
-    return jsonDecode(
-      response.body,
-    );
+    final streamedResponse = await request.send();
+
+    final response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode != 201 && response.statusCode != 200) {
+      throw Exception("Gagal membuat laporan");
+    }
+
+    return jsonDecode(response.body);
   }
 }

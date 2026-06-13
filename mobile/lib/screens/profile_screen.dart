@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../services/auth_service.dart';
 import 'login_screen.dart';
 import 'my_reports_screen.dart';
 
@@ -92,6 +93,12 @@ class _ProfileScreenState
       return;
     }
 
+    try {
+
+      await AuthService.logout();
+
+    } catch (_) {}
+
     final prefs =
         await SharedPreferences.getInstance();
 
@@ -105,6 +112,10 @@ class _ProfileScreenState
 
     await prefs.remove(
       "email",
+    );
+
+    await prefs.remove(
+      "token",
     );
 
     if (!mounted) return;
