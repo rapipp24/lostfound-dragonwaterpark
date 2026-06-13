@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login_screen.dart';
+import 'my_reports_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -172,6 +173,35 @@ class _ProfileScreenState
 
             const SizedBox(
               height: 30,
+            ),
+
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+
+              child: OutlinedButton.icon(
+                icon: const Icon(
+                  Icons.article,
+                ),
+
+                label: const Text(
+                  "LAPORAN SAYA",
+                ),
+
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const MyReportsScreen(),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(
+              height: 12,
             ),
 
             SizedBox(

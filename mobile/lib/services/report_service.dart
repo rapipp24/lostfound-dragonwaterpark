@@ -32,6 +32,31 @@ class ReportService {
     return result["data"];
   }
 
+  static Future<List<dynamic>>
+      getMyReports() async {
+
+    final response =
+        await http.get(
+      Uri.parse(
+        "$baseUrl/reports/me",
+      ),
+    );
+
+    if (response.statusCode !=
+        200) {
+      throw Exception(
+        "Gagal mengambil laporan saya",
+      );
+    }
+
+    final result =
+        jsonDecode(
+      response.body,
+    );
+
+    return result["data"];
+  }
+
   static Future<dynamic>
       createReport(
     String item,
