@@ -16,7 +16,6 @@ class ReportsScreen extends StatefulWidget {
 
 class _ReportsScreenState
     extends State<ReportsScreen> {
-
   List<dynamic> reports = [];
 
   List<dynamic> filteredReports = [];
@@ -33,29 +32,19 @@ class _ReportsScreenState
   }
 
   Future<void> fetchReports() async {
-
     try {
-
       final data =
           await ReportService.getReports();
-
-      debugPrint(
-        data.toString(),
-      );
 
       setState(() {
         reports = data;
         filteredReports = data;
       });
-
     } catch (e) {
-
       debugPrint(
         e.toString(),
       );
-
     } finally {
-
       setState(() {
         loading = false;
       });
@@ -65,12 +54,9 @@ class _ReportsScreenState
   void searchReport(
     String value,
   ) {
-
     setState(() {
-
       filteredReports =
           reports.where((report) {
-
         final item =
             report["item"]
                 .toString()
@@ -79,22 +65,46 @@ class _ReportsScreenState
         return item.contains(
           value.toLowerCase(),
         );
-
       }).toList();
     });
   }
 
+  Color getStatusColor(
+    String status,
+  ) {
+    switch (
+        status.toLowerCase()) {
+      case "claimed":
+        return Colors.blue;
+
+      case "pending":
+        return Colors.orange;
+
+      default:
+        return Colors.green;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor:
+          const Color(0xFFF8F7FC),
+
       appBar: AppBar(
+        backgroundColor:
+            Colors.transparent,
+        elevation: 0,
+
         title: const Text(
-          "Found Items",
+          "Lost & Found",
+          style: TextStyle(
+            fontWeight:
+                FontWeight.bold,
+          ),
         ),
 
         actions: [
-
           IconButton(
             icon: const Icon(
               Icons.person,
@@ -130,6 +140,9 @@ class _ReportsScreenState
 
       floatingActionButton:
           FloatingActionButton(
+        backgroundColor:
+            Colors.deepPurple,
+
         onPressed: () {
           Navigator.push(
             context,
@@ -139,8 +152,10 @@ class _ReportsScreenState
             ),
           );
         },
+
         child: const Icon(
           Icons.add,
+          color: Colors.white,
         ),
       ),
 
@@ -156,25 +171,27 @@ class _ReportsScreenState
               ? const Center(
                   child: Column(
                     mainAxisAlignment:
-                        MainAxisAlignment.center,
-
+                        MainAxisAlignment
+                            .center,
                     children: [
-
                       Icon(
-                        Icons.inventory_2_outlined,
-                        size: 80,
-                        color: Colors.grey,
+                        Icons
+                            .inventory_2_outlined,
+                        size: 90,
+                        color:
+                            Colors.grey,
                       ),
-
                       SizedBox(
                         height: 16,
                       ),
-
                       Text(
                         "Belum ada barang ditemukan",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey,
+                        style:
+                            TextStyle(
+                          fontSize:
+                              18,
+                          color: Colors
+                              .grey,
                         ),
                       ),
                     ],
@@ -190,28 +207,86 @@ class _ReportsScreenState
 
                       Padding(
                         padding:
-                            const EdgeInsets.all(
-                          16,
+                            const EdgeInsets
+                                .fromLTRB(
+                          20,
+                          10,
+                          20,
+                          10,
                         ),
 
-                        child: TextField(
-                          controller:
-                              searchController,
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment
+                                  .start,
 
-                          onChanged:
-                              searchReport,
+                          children: [
 
-                          decoration:
-                              const InputDecoration(
-                            hintText:
-                                "Cari barang...",
-                            prefixIcon:
-                                Icon(
-                              Icons.search,
+                            const Text(
+                              "Temukan Barang Anda 🔍",
+                              style:
+                                  TextStyle(
+                                fontSize:
+                                    24,
+                                fontWeight:
+                                    FontWeight
+                                        .bold,
+                              ),
                             ),
-                            border:
-                                OutlineInputBorder(),
-                          ),
+
+                            const SizedBox(
+                              height: 5,
+                            ),
+
+                            Text(
+                              "Lihat barang yang ditemukan oleh petugas",
+                              style:
+                                  TextStyle(
+                                color: Colors
+                                    .grey[600],
+                              ),
+                            ),
+
+                            const SizedBox(
+                              height: 20,
+                            ),
+
+                            TextField(
+                              controller:
+                                  searchController,
+
+                              onChanged:
+                                  searchReport,
+
+                              decoration:
+                                  InputDecoration(
+                                hintText:
+                                    "Cari barang...",
+
+                                prefixIcon:
+                                    const Icon(
+                                  Icons.search,
+                                ),
+
+                                filled:
+                                    true,
+
+                                fillColor:
+                                    Colors.white,
+
+                                border:
+                                    OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(
+                                    16,
+                                  ),
+
+                                  borderSide:
+                                      BorderSide.none,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 
@@ -220,52 +295,220 @@ class _ReportsScreenState
                             ListView.builder(
                           padding:
                               const EdgeInsets.symmetric(
-                            horizontal: 16,
+                            horizontal:
+                                16,
                           ),
 
                           itemCount:
-                              filteredReports.length,
+                              filteredReports
+                                  .length,
 
                           itemBuilder:
                               (
                             context,
                             index,
                           ) {
-
                             final report =
                                 filteredReports[
                                     index];
 
+                            final status =
+                                report["status"] ??
+                                    "Found";
+
                             return Card(
+                              elevation:
+                                  3,
+
+                              margin:
+                                  const EdgeInsets.only(
+                                bottom:
+                                    14,
+                              ),
+
+                              shape:
+                                  RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(
+                                  18,
+                                ),
+                              ),
+
                               child:
-                                  ListTile(
-                                leading:
-                                    const Icon(
-                                  Icons.inventory,
+                                  InkWell(
+                                borderRadius:
+                                    BorderRadius.circular(
+                                  18,
                                 ),
 
-                                title: Text(
-                                  report["item"] ??
-                                      "-",
-                                ),
-
-                                subtitle: Text(
-                                  report["location"] ??
-                                      "-",
-                                ),
-
-                                onTap: () {
+                                onTap:
+                                    () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) =>
-                                          ReportDetailScreen(
+                                      builder:
+                                          (_) =>
+                                              ReportDetailScreen(
                                         report:
                                             report,
                                       ),
                                     ),
                                   );
                                 },
+
+                                child:
+                                    Padding(
+                                  padding:
+                                      const EdgeInsets.all(
+                                    16,
+                                  ),
+
+                                  child:
+                                      Row(
+                                    children: [
+
+                                      Container(
+                                        width:
+                                            60,
+                                        height:
+                                            60,
+
+                                        decoration:
+                                            BoxDecoration(
+                                          color: Colors
+                                              .deepPurple
+                                              .shade50,
+
+                                          borderRadius:
+                                              BorderRadius.circular(
+                                            14,
+                                          ),
+                                        ),
+
+                                        child:
+                                            const Icon(
+                                          Icons
+                                              .inventory_2,
+                                          size:
+                                              30,
+                                          color:
+                                              Colors.deepPurple,
+                                        ),
+                                      ),
+
+                                      const SizedBox(
+                                        width:
+                                            14,
+                                      ),
+
+                                      Expanded(
+                                        child:
+                                            Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+
+                                          children: [
+
+                                            Text(
+                                              report["item"] ??
+                                                  "-",
+
+                                              style:
+                                                  const TextStyle(
+                                                fontSize:
+                                                    18,
+                                                fontWeight:
+                                                    FontWeight.bold,
+                                              ),
+                                            ),
+
+                                            const SizedBox(
+                                              height:
+                                                  6,
+                                            ),
+
+                                            Row(
+                                              children: [
+
+                                                const Icon(
+                                                  Icons.location_on,
+                                                  size:
+                                                      16,
+                                                  color:
+                                                      Colors.grey,
+                                                ),
+
+                                                const SizedBox(
+                                                  width:
+                                                      4,
+                                                ),
+
+                                                Expanded(
+                                                  child:
+                                                      Text(
+                                                    report["location"] ??
+                                                        "-",
+
+                                                    style:
+                                                        const TextStyle(
+                                                      color:
+                                                          Colors.grey,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                            const SizedBox(
+                                              height:
+                                                  8,
+                                            ),
+
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal:
+                                                    10,
+                                                vertical:
+                                                    4,
+                                              ),
+
+                                              decoration:
+                                                  BoxDecoration(
+                                                color: getStatusColor(
+                                                  status,
+                                                ).withOpacity(
+                                                  0.15,
+                                                ),
+
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  20,
+                                                ),
+                                              ),
+
+                                              child:
+                                                  Text(
+                                                status,
+
+                                                style:
+                                                    TextStyle(
+                                                  color:
+                                                      getStatusColor(
+                                                    status,
+                                                  ),
+
+                                                  fontWeight:
+                                                      FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             );
                           },

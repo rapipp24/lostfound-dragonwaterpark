@@ -11,7 +11,6 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState
     extends State<RegisterScreen> {
-
   final fullNameController =
       TextEditingController();
 
@@ -24,11 +23,9 @@ class _RegisterScreenState
   bool isLoading = false;
 
   Future<void> handleRegister() async {
-
     if (fullNameController.text.isEmpty ||
         emailController.text.isEmpty ||
         passwordController.text.isEmpty) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
@@ -37,13 +34,11 @@ class _RegisterScreenState
           ),
         ),
       );
-
       return;
     }
 
     if (passwordController.text.length <
         6) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
@@ -52,12 +47,10 @@ class _RegisterScreenState
           ),
         ),
       );
-
       return;
     }
 
     try {
-
       setState(() {
         isLoading = true;
       });
@@ -82,9 +75,7 @@ class _RegisterScreenState
       );
 
       Navigator.pop(context);
-
     } catch (e) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         SnackBar(
@@ -93,100 +84,264 @@ class _RegisterScreenState
           ),
         ),
       );
-
     } finally {
-
       setState(() {
         isLoading = false;
       });
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildInput({
+    required TextEditingController
+        controller,
+    required String label,
+    required IconData icon,
+    bool obscureText = false,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Register",
+      decoration: InputDecoration(
+        labelText: label,
+
+        prefixIcon:
+            Icon(icon),
+
+        filled: true,
+        fillColor: Colors.white,
+
+        border:
+            OutlineInputBorder(
+          borderRadius:
+              BorderRadius.circular(
+            16,
+          ),
         ),
       ),
+    );
+  }
 
-      body: Padding(
-        padding:
-            const EdgeInsets.all(24),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor:
+          const Color(0xFFF8F7FC),
 
-        child: Column(
-          children: [
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding:
+                const EdgeInsets.all(
+              24,
+            ),
 
-            TextField(
-              controller:
-                  fullNameController,
-              decoration:
-                  const InputDecoration(
-                labelText:
-                    "Nama Lengkap",
-                border:
-                    OutlineInputBorder(),
+            child: Container(
+              constraints:
+                  const BoxConstraints(
+                maxWidth: 420,
               ),
-            ),
 
-            const SizedBox(
-              height: 16,
-            ),
+              child: Column(
+                children: [
 
-            TextField(
-              controller:
-                  emailController,
-              decoration:
-                  const InputDecoration(
-                labelText: "Email",
-                border:
-                    OutlineInputBorder(),
-              ),
-            ),
+                  Container(
+                    width: 120,
+                    height: 120,
 
-            const SizedBox(
-              height: 16,
-            ),
+                    decoration:
+                        BoxDecoration(
+                      color: Colors
+                          .deepPurple
+                          .shade50,
 
-            TextField(
-              controller:
-                  passwordController,
-              obscureText: true,
-              decoration:
-                  const InputDecoration(
-                labelText:
-                    "Password",
-                border:
-                    OutlineInputBorder(),
-              ),
-            ),
+                      shape:
+                          BoxShape.circle,
+                    ),
 
-            const SizedBox(
-              height: 24,
-            ),
+                    child: Icon(
+                      Icons.person_add,
+                      size: 60,
+                      color: Colors
+                          .deepPurple,
+                    ),
+                  ),
 
-            SizedBox(
-              width:
-                  double.infinity,
-              height: 50,
+                  const SizedBox(
+                    height: 24,
+                  ),
 
-              child:
-                  ElevatedButton(
-                onPressed:
-                    isLoading
-                        ? null
-                        : handleRegister,
+                  const Text(
+                    "Buat Akun",
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight:
+                          FontWeight.bold,
+                    ),
+                  ),
 
-                child: isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text(
-                        "REGISTER",
+                  const SizedBox(
+                    height: 8,
+                  ),
+
+                  Text(
+                    "Daftar untuk menggunakan aplikasi Lost & Found",
+                    textAlign:
+                        TextAlign.center,
+                    style: TextStyle(
+                      color:
+                          Colors.grey[600],
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 30,
+                  ),
+
+                  Container(
+                    padding:
+                        const EdgeInsets
+                            .all(24),
+
+                    decoration:
+                        BoxDecoration(
+                      color:
+                          Colors.white,
+
+                      borderRadius:
+                          BorderRadius
+                              .circular(
+                        24,
                       ),
+
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors
+                              .black12,
+                          blurRadius:
+                              12,
+                          offset:
+                              const Offset(
+                            0,
+                            4,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    child: Column(
+                      children: [
+
+                        buildInput(
+                          controller:
+                              fullNameController,
+                          label:
+                              "Nama Lengkap",
+                          icon:
+                              Icons.person,
+                        ),
+
+                        const SizedBox(
+                          height: 16,
+                        ),
+
+                        buildInput(
+                          controller:
+                              emailController,
+                          label:
+                              "Email",
+                          icon:
+                              Icons.email,
+                        ),
+
+                        const SizedBox(
+                          height: 16,
+                        ),
+
+                        buildInput(
+                          controller:
+                              passwordController,
+                          label:
+                              "Password",
+                          icon:
+                              Icons.lock,
+                          obscureText:
+                              true,
+                        ),
+
+                        const SizedBox(
+                          height: 24,
+                        ),
+
+                        SizedBox(
+                          width:
+                              double.infinity,
+                          height: 55,
+
+                          child:
+                              ElevatedButton(
+                            onPressed:
+                                isLoading
+                                    ? null
+                                    : handleRegister,
+
+                            style:
+                                ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Colors.deepPurple,
+
+                              foregroundColor:
+                                  Colors.white,
+
+                              shape:
+                                  RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(
+                                  16,
+                                ),
+                              ),
+                            ),
+
+                            child: isLoading
+                                ? const CircularProgressIndicator(
+                                    color:
+                                        Colors.white,
+                                  )
+                                : const Text(
+                                    "REGISTER",
+                                    style:
+                                        TextStyle(
+                                      fontSize:
+                                          16,
+                                      fontWeight:
+                                          FontWeight.bold,
+                                    ),
+                                  ),
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 12,
+                        ),
+
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(
+                              context,
+                            );
+                          },
+
+                          child: const Text(
+                            "Sudah punya akun? Login",
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

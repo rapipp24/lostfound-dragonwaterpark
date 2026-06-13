@@ -15,7 +15,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState
     extends State<ProfileScreen> {
-
   String name = "-";
   String email = "-";
 
@@ -26,7 +25,6 @@ class _ProfileScreenState
   }
 
   Future<void> loadProfile() async {
-
     final prefs =
         await SharedPreferences.getInstance();
 
@@ -42,23 +40,18 @@ class _ProfileScreenState
   }
 
   Future<void> logout() async {
-
     final confirm =
         await showDialog<bool>(
       context: context,
-
       builder: (context) {
         return AlertDialog(
           title: const Text(
             "Logout",
           ),
-
           content: const Text(
             "Apakah Anda yakin ingin logout?",
           ),
-
           actions: [
-
             TextButton(
               onPressed: () {
                 Navigator.pop(
@@ -66,12 +59,10 @@ class _ProfileScreenState
                   false,
                 );
               },
-
               child: const Text(
                 "Batal",
               ),
             ),
-
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(
@@ -79,7 +70,6 @@ class _ProfileScreenState
                   true,
                 );
               },
-
               child: const Text(
                 "Logout",
               ),
@@ -89,14 +79,10 @@ class _ProfileScreenState
       },
     );
 
-    if (confirm != true) {
-      return;
-    }
+    if (confirm != true) return;
 
     try {
-
       await AuthService.logout();
-
     } catch (_) {}
 
     final prefs =
@@ -105,15 +91,12 @@ class _ProfileScreenState
     await prefs.remove(
       "isLoggedIn",
     );
-
     await prefs.remove(
       "name",
     );
-
     await prefs.remove(
       "email",
     );
-
     await prefs.remove(
       "token",
     );
@@ -133,105 +116,256 @@ class _ProfileScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          const Color(0xFFF8F7FC),
+
       appBar: AppBar(
+        backgroundColor:
+            Colors.transparent,
+        elevation: 0,
+
         title: const Text(
           "Profil Saya",
+          style: TextStyle(
+            fontWeight:
+                FontWeight.bold,
+          ),
         ),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(24),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding:
+              const EdgeInsets.all(
+            24,
+          ),
 
-        child: Column(
-          children: [
+          child: Column(
+            children: [
+              Container(
+                width:
+                    double.infinity,
 
-            const CircleAvatar(
-              radius: 50,
-              child: Icon(
-                Icons.person,
-                size: 50,
-              ),
-            ),
+                padding:
+                    const EdgeInsets
+                        .all(24),
 
-            const SizedBox(
-              height: 20,
-            ),
+                decoration:
+                    BoxDecoration(
+                  color: Colors.white,
 
-            Text(
-              name,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight:
-                    FontWeight.bold,
-              ),
-            ),
+                  borderRadius:
+                      BorderRadius
+                          .circular(
+                    24,
+                  ),
 
-            const SizedBox(
-              height: 8,
-            ),
-
-            Text(
-              email,
-            ),
-
-            const SizedBox(
-              height: 8,
-            ),
-
-            const Text(
-              "Role: User",
-            ),
-
-            const SizedBox(
-              height: 30,
-            ),
-
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-
-              child: OutlinedButton.icon(
-                icon: const Icon(
-                  Icons.article,
-                ),
-
-                label: const Text(
-                  "LAPORAN SAYA",
-                ),
-
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          const MyReportsScreen(),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors
+                          .black12,
+                      blurRadius:
+                          12,
+                      offset:
+                          const Offset(
+                        0,
+                        4,
+                      ),
                     ),
-                  );
-                },
-              ),
-            ),
-
-            const SizedBox(
-              height: 12,
-            ),
-
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-
-              child: ElevatedButton.icon(
-                icon: const Icon(
-                  Icons.logout,
+                  ],
                 ),
 
-                label: const Text(
-                  "LOGOUT",
-                ),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 55,
+                      backgroundColor:
+                          Colors
+                              .deepPurple
+                              .shade100,
 
-                onPressed: logout,
+                      child: Icon(
+                        Icons.person,
+                        size: 60,
+                        color: Colors
+                            .deepPurple,
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 16,
+                    ),
+
+                    Text(
+                      name,
+                      style:
+                          const TextStyle(
+                        fontSize: 28,
+                        fontWeight:
+                            FontWeight
+                                .bold,
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 6,
+                    ),
+
+                    Text(
+                      email,
+                      style:
+                          TextStyle(
+                        color: Colors
+                            .grey[700],
+                        fontSize: 16,
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 16,
+                    ),
+
+                    Container(
+                      padding:
+                          const EdgeInsets
+                              .symmetric(
+                        horizontal:
+                            18,
+                        vertical: 8,
+                      ),
+
+                      decoration:
+                          BoxDecoration(
+                        color: Colors
+                            .deepPurple
+                            .shade50,
+
+                        borderRadius:
+                            BorderRadius
+                                .circular(
+                          30,
+                        ),
+                      ),
+
+                      child:
+                          const Text(
+                        "USER",
+                        style:
+                            TextStyle(
+                          fontWeight:
+                              FontWeight
+                                  .bold,
+                          color: Colors
+                              .deepPurple,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+
+              const SizedBox(
+                height: 30,
+              ),
+
+              SizedBox(
+                width:
+                    double.infinity,
+                height: 55,
+
+                child:
+                    ElevatedButton
+                        .icon(
+                  icon: const Icon(
+                    Icons.article,
+                  ),
+
+                  label:
+                      const Text(
+                    "LAPORAN SAYA",
+                  ),
+
+                  style:
+                      ElevatedButton
+                          .styleFrom(
+                    backgroundColor:
+                        Colors
+                            .deepPurple,
+
+                    foregroundColor:
+                        Colors.white,
+
+                    shape:
+                        RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius
+                              .circular(
+                        16,
+                      ),
+                    ),
+                  ),
+
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const MyReportsScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(
+                height: 14,
+              ),
+
+              SizedBox(
+                width:
+                    double.infinity,
+                height: 55,
+
+                child:
+                    OutlinedButton
+                        .icon(
+                  icon: const Icon(
+                    Icons.logout,
+                  ),
+
+                  label:
+                      const Text(
+                    "LOGOUT",
+                  ),
+
+                  style:
+                      OutlinedButton
+                          .styleFrom(
+                    foregroundColor:
+                        Colors.red,
+
+                    side:
+                        const BorderSide(
+                      color:
+                          Colors.red,
+                    ),
+
+                    shape:
+                        RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius
+                              .circular(
+                        16,
+                      ),
+                    ),
+                  ),
+
+                  onPressed:
+                      logout,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

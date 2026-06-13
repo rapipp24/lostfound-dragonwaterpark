@@ -15,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState
     extends State<LoginScreen> {
-
   final emailController =
       TextEditingController();
 
@@ -25,10 +24,8 @@ class _LoginScreenState
   bool isLoading = false;
 
   Future<void> handleLogin() async {
-
     if (emailController.text.isEmpty ||
         passwordController.text.isEmpty) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
@@ -37,12 +34,10 @@ class _LoginScreenState
           ),
         ),
       );
-
       return;
     }
 
     try {
-
       setState(() {
         isLoading = true;
       });
@@ -51,10 +46,6 @@ class _LoginScreenState
           await AuthService.login(
         emailController.text,
         passwordController.text,
-      );
-
-      debugPrint(
-        result.toString(),
       );
 
       final prefs =
@@ -67,32 +58,22 @@ class _LoginScreenState
 
       await prefs.setString(
         "token",
-         result["access_token"] ?? "",
+        result["access_token"] ?? "",
       );
-      
-      await prefs.setString(
-  "email",
-  emailController.text,
-);
 
-await prefs.setString(
-  "name",
-  emailController.text
-      .split("@")
-      .first,
-);
+      await prefs.setString(
+        "email",
+        emailController.text,
+      );
+
+      await prefs.setString(
+        "name",
+        emailController.text
+            .split("@")
+            .first,
+      );
 
       if (!mounted) return;
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-        SnackBar(
-          content: Text(
-            result["message"] ??
-                "Login berhasil",
-          ),
-        ),
-      );
 
       Navigator.pushReplacement(
         context,
@@ -101,9 +82,7 @@ await prefs.setString(
               const ReportsScreen(),
         ),
       );
-
     } catch (e) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         SnackBar(
@@ -112,148 +91,260 @@ await prefs.setString(
           ),
         ),
       );
-
     } finally {
-
       setState(() {
         isLoading = false;
       });
     }
   }
 
+  InputDecoration buildInput(
+    String label,
+    IconData icon,
+  ) {
+    return InputDecoration(
+      labelText: label,
+
+      prefixIcon:
+          Icon(icon),
+
+      filled: true,
+      fillColor: Colors.white,
+
+      border:
+          OutlineInputBorder(
+        borderRadius:
+            BorderRadius.circular(
+          16,
+        ),
+      ),
+
+      enabledBorder:
+          OutlineInputBorder(
+        borderRadius:
+            BorderRadius.circular(
+          16,
+        ),
+        borderSide:
+            BorderSide(
+          color:
+              Colors.grey.shade300,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor:
-          const Color(0xfff8fafc),
+          const Color(0xFFF8F7FC),
 
-      body: Center(
-        child: SingleChildScrollView(
-          padding:
-              const EdgeInsets.all(24),
-
-          child: Container(
-            constraints:
-                const BoxConstraints(
-              maxWidth: 400,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding:
+                const EdgeInsets.all(
+              24,
             ),
 
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.stretch,
+            child: Container(
+              constraints:
+                  const BoxConstraints(
+                maxWidth: 420,
+              ),
 
-              children: [
-                const Icon(
-                  Icons.water,
-                  size: 80,
-                  color: Colors.blue,
-                ),
+              child: Column(
+                children: [
 
-                const SizedBox(
-                  height: 20,
-                ),
+                  Container(
+  padding: const EdgeInsets.all(16),
 
-                const Text(
-                  "Dragon Waterpark",
-                  textAlign:
-                      TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight:
-                        FontWeight.bold,
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(24),
+
+    boxShadow: const [
+      BoxShadow(
+        color: Colors.black12,
+        blurRadius: 10,
+      ),
+    ],
+  ),
+
+  child: Image.asset(
+    "assets/Logo_Dragon_Waterpak.png",
+    height: 120,
+  ),
+),
+
+                  const SizedBox(
+                    height: 24,
                   ),
-                ),
 
-                const SizedBox(
-                  height: 8,
-                ),
-
-                const Text(
-                  "Lost & Found",
-                  textAlign:
-                      TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey,
+                  const Text(
+                    "Lost & Found",
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight:
+                          FontWeight.bold,
+                    ),
                   ),
-                ),
 
-                const SizedBox(
-                  height: 40,
-                ),
-
-                TextField(
-                  controller:
-                      emailController,
-                  decoration:
-                      const InputDecoration(
-                    labelText: "Email",
-                    border:
-                        OutlineInputBorder(),
+                  const SizedBox(
+                    height: 8,
                   ),
-                ),
 
-                const SizedBox(
-                  height: 16,
-                ),
-
-                TextField(
-                  controller:
-                      passwordController,
-                  obscureText: true,
-                  decoration:
-                      const InputDecoration(
-                    labelText:
-                        "Password",
-                    border:
-                        OutlineInputBorder(),
+                  Text(
+                    "Dragon Waterpark",
+                    style: TextStyle(
+                      color:
+                          Colors.grey[600],
+                      fontSize: 16,
+                    ),
                   ),
-                ),
 
-                const SizedBox(
-                  height: 24,
-                ),
-
-                SizedBox(
-                  height: 50,
-
-                  child:
-                      ElevatedButton(
-                    onPressed:
-                        isLoading
-                            ? null
-                            : handleLogin,
-
-                    child: isLoading
-                        ? const CircularProgressIndicator(
-                            color:
-                                Colors.white,
-                          )
-                        : const Text(
-                            "LOGIN",
-                          ),
+                  const SizedBox(
+                    height: 32,
                   ),
-                ),
 
-                const SizedBox(
-                  height: 16,
-                ),
+                  Container(
+                    padding:
+                        const EdgeInsets
+                            .all(24),
 
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            const RegisterScreen(),
+                    decoration:
+                        BoxDecoration(
+                      color:
+                          Colors.white,
+
+                      borderRadius:
+                          BorderRadius
+                              .circular(
+                        24,
                       ),
-                    );
-                  },
-                  child: const Text(
-                    "Belum punya akun? Register",
+
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors
+                              .black12,
+                          blurRadius:
+                              12,
+                          offset:
+                              const Offset(
+                            0,
+                            4,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    child: Column(
+                      children: [
+
+                        TextField(
+                          controller:
+                              emailController,
+                          decoration:
+                              buildInput(
+                            "Email",
+                            Icons.email,
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 16,
+                        ),
+
+                        TextField(
+                          controller:
+                              passwordController,
+                          obscureText:
+                              true,
+                          decoration:
+                              buildInput(
+                            "Password",
+                            Icons.lock,
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 24,
+                        ),
+
+                        SizedBox(
+                          width:
+                              double.infinity,
+                          height: 55,
+
+                          child:
+                              ElevatedButton(
+                            onPressed:
+                                isLoading
+                                    ? null
+                                    : handleLogin,
+
+                            style:
+                                ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Colors
+                                      .deepPurple,
+
+                              foregroundColor:
+                                  Colors
+                                      .white,
+
+                              shape:
+                                  RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(
+                                  16,
+                                ),
+                              ),
+                            ),
+
+                            child: isLoading
+                                ? const CircularProgressIndicator(
+                                    color:
+                                        Colors.white,
+                                  )
+                                : const Text(
+                                    "LOGIN",
+                                    style:
+                                        TextStyle(
+                                      fontWeight:
+                                          FontWeight.bold,
+                                      fontSize:
+                                          16,
+                                    ),
+                                  ),
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 12,
+                        ),
+
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    const RegisterScreen(),
+                              ),
+                            );
+                          },
+
+                          child: const Text(
+                            "Belum punya akun? Register",
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

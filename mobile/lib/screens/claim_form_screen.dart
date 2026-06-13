@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../services/claim_service.dart';
 
 class ClaimFormScreen extends StatefulWidget {
-
   final int reportId;
 
   const ClaimFormScreen({
@@ -18,7 +17,6 @@ class ClaimFormScreen extends StatefulWidget {
 
 class _ClaimFormScreenState
     extends State<ClaimFormScreen> {
-
   final nameController =
       TextEditingController();
 
@@ -28,7 +26,6 @@ class _ClaimFormScreenState
   bool loading = false;
 
   Future<void> submitClaim() async {
-
     final name =
         nameController.text.trim();
 
@@ -37,7 +34,6 @@ class _ClaimFormScreenState
 
     if (name.isEmpty ||
         phone.isEmpty) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
@@ -46,12 +42,10 @@ class _ClaimFormScreenState
           ),
         ),
       );
-
       return;
     }
 
     if (name.length < 3) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
@@ -60,14 +54,12 @@ class _ClaimFormScreenState
           ),
         ),
       );
-
       return;
     }
 
     if (!RegExp(
       r'^[0-9]+$',
     ).hasMatch(phone)) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
@@ -76,14 +68,12 @@ class _ClaimFormScreenState
           ),
         ),
       );
-
       return;
     }
 
     if (!phone.startsWith(
       "08",
     )) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
@@ -92,13 +82,11 @@ class _ClaimFormScreenState
           ),
         ),
       );
-
       return;
     }
 
     if (phone.length < 10 ||
         phone.length > 15) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
@@ -107,12 +95,10 @@ class _ClaimFormScreenState
           ),
         ),
       );
-
       return;
     }
 
     try {
-
       setState(() {
         loading = true;
       });
@@ -135,9 +121,7 @@ class _ClaimFormScreenState
       );
 
       Navigator.pop(context);
-
     } catch (e) {
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
         SnackBar(
@@ -146,59 +130,97 @@ class _ClaimFormScreenState
           ),
         ),
       );
-
     } finally {
-
       setState(() {
         loading = false;
       });
     }
   }
 
+  Widget buildInput({
+    required TextEditingController
+        controller,
+    required String label,
+    required IconData icon,
+    TextInputType keyboardType =
+        TextInputType.text,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+
+      decoration: InputDecoration(
+        labelText: label,
+
+        prefixIcon:
+            Icon(icon),
+
+        filled: true,
+        fillColor: Colors.white,
+
+        border:
+            OutlineInputBorder(
+          borderRadius:
+              BorderRadius.circular(
+            16,
+          ),
+          borderSide:
+              BorderSide.none,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor:
+          const Color(0xFFF8F7FC),
+
       appBar: AppBar(
+        backgroundColor:
+            Colors.transparent,
+        elevation: 0,
+
         title: const Text(
-          "Form Claim",
+          "Claim Barang",
+          style: TextStyle(
+            fontWeight:
+                FontWeight.bold,
+          ),
         ),
       ),
 
-      body: Padding(
+      body: SingleChildScrollView(
         padding:
-            const EdgeInsets.all(16),
+            const EdgeInsets.all(
+          20,
+        ),
 
         child: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+
           children: [
 
-            TextField(
-              controller:
-                  nameController,
-              decoration:
-                  const InputDecoration(
-                labelText:
-                    "Nama Pengklaim",
-                border:
-                    OutlineInputBorder(),
+            const Text(
+              "Ajukan Kepemilikan Barang",
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight:
+                    FontWeight.bold,
               ),
             ),
 
             const SizedBox(
-              height: 16,
+              height: 6,
             ),
 
-            TextField(
-              controller:
-                  phoneController,
-              keyboardType:
-                  TextInputType.phone,
-              decoration:
-                  const InputDecoration(
-                labelText:
-                    "Nomor Telepon",
-                border:
-                    OutlineInputBorder(),
+            Text(
+              "Lengkapi data berikut untuk mengajukan claim barang.",
+              style: TextStyle(
+                color:
+                    Colors.grey[600],
               ),
             ),
 
@@ -206,24 +228,112 @@ class _ClaimFormScreenState
               height: 24,
             ),
 
-            SizedBox(
+            Container(
               width:
                   double.infinity,
 
-              height: 50,
+              padding:
+                  const EdgeInsets.all(
+                20,
+              ),
+
+              decoration:
+                  BoxDecoration(
+                color: Colors.white,
+
+                borderRadius:
+                    BorderRadius
+                        .circular(
+                  20,
+                ),
+
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors
+                        .black12,
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+
+              child: Column(
+                children: [
+
+                  buildInput(
+                    controller:
+                        nameController,
+                    label:
+                        "Nama Pengklaim",
+                    icon:
+                        Icons.person,
+                  ),
+
+                  const SizedBox(
+                    height: 16,
+                  ),
+
+                  buildInput(
+                    controller:
+                        phoneController,
+                    label:
+                        "Nomor Telepon",
+                    icon:
+                        Icons.phone,
+                    keyboardType:
+                        TextInputType.phone,
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(
+              height: 30,
+            ),
+
+            SizedBox(
+              width:
+                  double.infinity,
+              height: 55,
 
               child:
-                  ElevatedButton(
+                  ElevatedButton.icon(
+                icon: const Icon(
+                  Icons.check_circle,
+                ),
+
+                label: loading
+                    ? const CircularProgressIndicator(
+                        color:
+                            Colors.white,
+                      )
+                    : const Text(
+                        "AJUKAN CLAIM",
+                      ),
+
+                style:
+                    ElevatedButton
+                        .styleFrom(
+                  backgroundColor:
+                      Colors
+                          .deepPurple,
+
+                  foregroundColor:
+                      Colors.white,
+
+                  shape:
+                      RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius
+                            .circular(
+                      16,
+                    ),
+                  ),
+                ),
+
                 onPressed:
                     loading
                         ? null
                         : submitClaim,
-
-                child: loading
-                    ? const CircularProgressIndicator()
-                    : const Text(
-                        "AJUKAN CLAIM",
-                      ),
               ),
             ),
           ],

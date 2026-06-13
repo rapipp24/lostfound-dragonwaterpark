@@ -36,9 +36,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
+  debugShowCheckedModeBanner: false,
 
-      home: FutureBuilder<bool>(
+  theme: ThemeData(
+    useMaterial3: true,
+
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: const Color(0xFF6C63FF),
+    ),
+
+    scaffoldBackgroundColor:
+        const Color(0xFFF8F7FC),
+  ),
+
+  home: FutureBuilder<bool>(
         future: isLoggedIn(),
 
         builder: (
