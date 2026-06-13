@@ -29,14 +29,81 @@ class _ClaimFormScreenState
 
   Future<void> submitClaim() async {
 
-    if (nameController.text.isEmpty ||
-        phoneController.text.isEmpty) {
+    final name =
+        nameController.text.trim();
+
+    final phone =
+        phoneController.text.trim();
+
+    if (name.isEmpty ||
+        phone.isEmpty) {
 
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
           content: Text(
             "Semua field wajib diisi",
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    if (name.length < 3) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Nama minimal 3 karakter",
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    if (!RegExp(
+      r'^[0-9]+$',
+    ).hasMatch(phone)) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Nomor telepon hanya boleh angka",
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    if (!phone.startsWith(
+      "08",
+    )) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Nomor telepon harus diawali 08",
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    if (phone.length < 10 ||
+        phone.length > 15) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Nomor telepon harus 10-15 digit",
           ),
         ),
       );
@@ -51,8 +118,8 @@ class _ClaimFormScreenState
       });
 
       await ClaimService.createClaim(
-        nameController.text,
-        phoneController.text,
+        name,
+        phone,
         widget.reportId,
       );
 
@@ -142,6 +209,7 @@ class _ClaimFormScreenState
             SizedBox(
               width:
                   double.infinity,
+
               height: 50,
 
               child:
