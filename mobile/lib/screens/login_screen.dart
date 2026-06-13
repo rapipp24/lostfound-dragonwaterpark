@@ -53,6 +53,10 @@ class _LoginScreenState
         passwordController.text,
       );
 
+      debugPrint(
+        result.toString(),
+      );
+
       final prefs =
           await SharedPreferences.getInstance();
 

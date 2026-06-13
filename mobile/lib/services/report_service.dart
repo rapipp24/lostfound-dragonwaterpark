@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ReportService {
 
-  static const String baseUrl =
-      "http://localhost:3000";
+  static String get baseUrl =>
+    dotenv.env['BASE_URL']!;
 
   static Future<List<dynamic>>
       getReports() async {
