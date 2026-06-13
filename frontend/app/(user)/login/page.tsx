@@ -67,6 +67,13 @@ export default function LoginPage() {
         data.access_token
       );
 
+      if (data.refresh_token) {
+        setCookie(
+          "refresh_token",
+          data.refresh_token
+        );
+      }
+
       setCookie(
         "user",
         JSON.stringify(

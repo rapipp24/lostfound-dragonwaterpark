@@ -21,11 +21,15 @@ export default function ReportsPage() {
       const responseData = await getReports(status || undefined, search || undefined);
       const reportsArray = responseData.data || [];
 
-      const mappedData = reportsArray.map((r: { id: number; item: string; location: string; status: string }) => ({
+      const mappedData = reportsArray.map((r: any) => ({
         id: r.id,
         item: r.item,
         location: r.location,
         status: r.status,
+        description: r.description || "",
+        image: r.image || "",
+        createdAt: r.createdAt || "",
+        user: r.user || null,
       }));
 
       setReports(mappedData);

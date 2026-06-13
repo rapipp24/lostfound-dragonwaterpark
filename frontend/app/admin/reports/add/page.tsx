@@ -24,20 +24,61 @@ export default function AddReportPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Ukuran file terlalu besar (Maks 5MB)");
-        return;
-      }
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
+    if (!file) return;
+
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ];
+
+    const allowedFileExtensions = [
+      "jpg",
+      "jpeg",
+      "png",
+      "webp"
+    ];
+
+    if (
+      !allowedTypes.includes(file.type) ||
+      !fileExtension ||
+      !allowedFileExtensions.includes(fileExtension)
+    ) {
+      alert(`Format file ${fileExtension ? `.${fileExtension.toUpperCase()}` : ""} tidak didukung untuk foto barang! Silakan pilih file gambar dengan format JPG, JPEG, atau PNG.`);
+
+      setImage(null);
+      setImagePreview(null);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("File terlalu besar. Maksimal 2MB.");
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      return;
+    }
+
+    setImage(file);
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+
+    reader.readAsDataURL(file);
+  };
   const removeImage = () => {
     setImage(null);
     setImagePreview(null);
@@ -46,7 +87,6 @@ export default function AddReportPage() {
     }
   };
 
-  // Derive access status to avoid set-state-in-effect warning
   const hasAccess = authLoading || (isLogin && !user)
     ? null
     : !!(isLogin && user && user.role === "admin");
@@ -186,12 +226,12 @@ export default function AddReportPage() {
                   <Camera size={16} className="text-blue-600" />
                   Foto Barang Temuan (Opsional)
                 </label>
-                
+
                 <input
                   type="file"
                   ref={fileInputRef}
                   onChange={handleFileChange}
-                  accept="image/*"
+                  accept=".jpg, .jpeg, .png, .doc, .docx, .pdf"
                   className="hidden"
                 />
 
