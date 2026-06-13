@@ -66,6 +66,11 @@ class _LoginScreenState
       );
 
       await prefs.setString(
+        "token",
+         result["access_token"] ?? "",
+      );
+      
+      await prefs.setString(
   "email",
   emailController.text,
 );

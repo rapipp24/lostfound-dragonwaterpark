@@ -4,6 +4,7 @@ import '../services/report_service.dart';
 import 'login_screen.dart';
 import 'profile_screen.dart';
 import 'report_detail_screen.dart';
+import 'create_report_screen.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -39,7 +40,7 @@ class _ReportsScreenState
           await ReportService.getReports();
 
       debugPrint(
-          data.toString(),
+        data.toString(),
       );
 
       setState(() {
@@ -125,6 +126,22 @@ class _ReportsScreenState
             },
           ),
         ],
+      ),
+
+      floatingActionButton:
+          FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  const CreateReportScreen(),
+            ),
+          );
+        },
+        child: const Icon(
+          Icons.add,
+        ),
       ),
 
       body: loading
